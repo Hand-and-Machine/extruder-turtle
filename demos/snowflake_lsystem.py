@@ -1,6 +1,7 @@
 from extruder_turtle import ExtruderTurtle
 import math
 
+## L-system for the Koch Snowflake
 instr = "frrfrrfrr"
 sub_rules = {
             "f": "flfrrflf",
@@ -19,7 +20,7 @@ for g in range(GENS):
 
 t = ExtruderTurtle()
 
-t.name("lsystem.gcode")
+t.name("snowflake_lsystem.gcode")
 t.setup(x=100, y=100)
 t.rate(700)
 

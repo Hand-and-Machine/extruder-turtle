@@ -19,7 +19,7 @@ for l in range(30):
         ## subsequent layers are increasingly curved
         for x in range(-25, 26):
             horiz_prop = x/25
-            t.move_lift(1, -vert_prop*horiz_prop*0.5)
+            t.move_lift(1, -vert_prop*horiz_prop*0.3)
         t.right(6*math.pi/7)
 
     ## Move to the next layer
