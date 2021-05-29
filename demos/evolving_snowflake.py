@@ -21,7 +21,7 @@ for g in range(NUM_GENS):
     for l in range(40):
         progress = l/40
         gap_length = progress*sidelength/3
-        long_length = (sidelength - gap_length)/3
+        long_length = (sidelength - gap_length)/2
         for r in instr:
             if r == "f":
                 t.move(long_length)

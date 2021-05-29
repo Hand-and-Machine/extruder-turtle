@@ -14,13 +14,15 @@ class ExtruderTurtle:
         self.heading = 0
         self.feedrate = 0
         self.density = 0.05
-        self.pendown = True;
+        self.pen = True;
         self.G1xyze = "G1 X{x} Y{y} Z{z} E{e}"
         self.G1xyz = "G1 X{x} Y{y} Z{z}"
         self.G1xye = "G1 X{x} Y{y} E{e}"
         self.G1xy = "G1 X{x} Y{y}"
+        self.G1e = "G1 E{e}"
         self.G1f = "G1 F{f}"
         self.G1z = "G1 Z{z}"
+        self.G4p = "G4 P{p}"
 
     def name(self, filename):
         self.out_filename = filename
@@ -49,27 +51,27 @@ class ExtruderTurtle:
         self.density = density
 
     def penup(self):
-        self.pendown = False
+        self.pen = False
 
     def pendown(self):
-        self.pendown = True
+        self.pen = True
 
     def rate(self, feedrate):
         self.do(self.G1f.format(f=feedrate))
 
     def right(self, theta):
-        self.heading += theta
+        self.heading += -theta
         self.heading = self.heading % (2*math.pi)
 
     def left(self, theta):
-        self.heading += -theta
+        self.heading += theta
         self.heading = self.heading % (2*math.pi)
 
     def move(self, distance):
         extrusion = distance * self.density
         dx = distance * math.cos(self.heading)
         dy = distance * math.sin(self.heading)
-        if self.pendown:
+        if self.pen:
             self.do(self.G1xye.format(x=dx, y=dy, e=extrusion))
         else:
             self.do(self.G1xy.format(x=dx, y=dy))
@@ -78,10 +80,16 @@ class ExtruderTurtle:
         extrusion = self.density * (distance**2 + height**2)**(1/2)
         dx = distance * math.cos(self.heading)
         dy = distance * math.sin(self.heading)
-        if self.pendown:
+        if self.pen:
             self.do(self.G1xyze.format(x=dx, y=dy, z=height, e=extrusion))
         else:
             self.do(self.G1xyz.format(x=dx, y=dy, z=height))
 
     def lift(self, height):
         self.do(self.G1z.format(z=height))
+
+    def dwell(self, ms):
+        self.do(self.G4p.format(p=ms))
+
+    def extrude(self, quantity):
+        self.do(self.G1e.format(e=quantity))
