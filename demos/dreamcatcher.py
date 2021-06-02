@@ -24,13 +24,12 @@ for l in range(50):
     t.right(dtheta/2)
 
     ## Draw a random chord on the circle
-    for i in range(3):
-        t.dwell(100)
-        t.set_density(0.03)    
-        rand_angle = dtheta*random.randint(1,N)/2
-        t.right(rand_angle)
-        t.move(DIAMETER*math.sin(rand_angle))
-        t.right(rand_angle)
+    t.dwell(100)
+    t.set_density(0.03)    
+    rand_angle = dtheta*random.randint(1,N)/2
+    t.right(rand_angle)
+    t.move(DIAMETER*math.sin(rand_angle))
+    t.right(rand_angle)
 
     ## Move to the next layer
     t.lift(0.3)

@@ -2,10 +2,10 @@ from extruder_turtle import ExtruderTurtle
 import math
 import random
 
-SIDELENGTH = 25
+SIDELENGTH = 20
 BUMPLENGTH = 1
 BUMP_ANGLE = math.pi/2
-NUM_SIDES = 5
+NUM_SIDES = 6
 LAYERS = 100
 
 t = ExtruderTurtle()
@@ -14,6 +14,7 @@ t = ExtruderTurtle()
 t.name("bumpy-prism.gcode")
 t.setup(x=100, y=100)
 t.rate(700)
+t.set_density(0.07)
 
 for l in range(LAYERS):
     ## Draw a pentagon

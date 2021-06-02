@@ -50,7 +50,9 @@ The following functions are used to configure the turtle and the style of the pr
 In the `demos` folder, you can find a few snippets of example code using `ExtruderTurtle` to generate GCODE files for interesting 3D prints. Here are descriptions of these demos, in roughly increasing order of complexity:
 
 - `seven_star.py`: draws a self-intersecting star polygon with seven points.
+- `spiral.py`: draws a flat circle of plastic by tracing out a very tight spiral.
 - `nonplanar_star.py`: draws the same star polygon as `seven_star.py`, but slightly concave down, so that the middle is higher than the points, using nonplanar slicing to make a smooth curve rather than one with stair-stepping
-- `feedrate_test.py`: draws a square prism, but with a gradually increasing feedrate, so that the extruder is eventually moving too fast for the extrusion to adhere
+- `dreamcatcher.py`: creates a dreamcatcher-like design by tracing out a very thin cylinder filled with random chords.
 - `snowflake_lsystem.py`: encodes the Koch Snowflake as an L-System with substitution rules, which it uses to generate a sequence of instructions for the turtle to follow to trace out the Snowflake
 - `complex_walk.py`: uses the mathematical properties and symmetries of a certain class of walks in the complex plane to generate a beautiful shape.
+- `evolving_snowflake.py`: draws the successive generations by which a Koch Snowflake fractal is produced, in such a way that they appear to "morph into" each other.
