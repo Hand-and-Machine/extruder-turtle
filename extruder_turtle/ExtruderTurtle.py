@@ -1,6 +1,6 @@
 import os
 import math
-from .location import __location__
+__location__ = os.path.dirname(__file__)
 
 class ExtruderTurtle:
 
