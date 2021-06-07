@@ -1,8 +1,8 @@
 from extruder_turtle import ExtruderTurtle
 import math
 
-N = 30
-RADIUS = 20
+N = 60
+RADIUS = 12
 dtheta = 2*math.pi/N
 dx = RADIUS*dtheta
 dr = -5/N
@@ -19,7 +19,7 @@ for l in range(40):
     radius = RADIUS
     prop = l/40
     while radius > 0:
-        t.move_lift(dx, prop*MAX_HEIGHT*dr/RADIUS)
+        t.move_lift(dx, prop*MAX_HEIGHT*(-dr)/RADIUS)
         t.right(dtheta)
         radius += dr
         dx = radius * dtheta
@@ -28,7 +28,7 @@ for l in range(40):
         radius += -dr
         dx = radius * dtheta
         t.left(dtheta)
-        t.move_lift(-dx, -prop*MAX_HEIGHT*dr/RADIUS)
+        t.move_lift(-dx, prop*MAX_HEIGHT*dr/RADIUS)
     t.lift(0.2)
 
 t.finish()

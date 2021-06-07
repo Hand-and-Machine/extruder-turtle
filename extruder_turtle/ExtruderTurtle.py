@@ -14,7 +14,12 @@ class ExtruderTurtle:
         self.heading = 0
         self.feedrate = 0
         self.density = 0.05
-        self.pen = True;
+        self.pen = True
+
+        self.track_history = False
+        self.prev_points = []
+        self.line_segs = []
+
         self.G1xyze = "G1 X{x} Y{y} Z{z} E{e}"
         self.G1xyz = "G1 X{x} Y{y} Z{z}"
         self.G1xye = "G1 X{x} Y{y} E{e}"
@@ -36,6 +41,7 @@ class ExtruderTurtle:
                     hotend_temp=215,
                     bed_temp=60
                     ):
+        if self.track_history: self.prev_points = [(x,y)]
         self.out_file = open(self.out_filename, 'w+')
         self.initseq_file = open(self.initseq_filename, 'r')
         self.do(self.initseq_file.read().format(**locals()))
@@ -67,12 +73,20 @@ class ExtruderTurtle:
         self.heading += theta
         self.heading = self.heading % (2*math.pi)
 
+    def record_move(self, dx, dy):
+        if self.track_history:
+            prev_point = self.prev_points[-1]
+            next_point = (prev_point[0]+dx, prev_point[1]+dy) 
+            self.prev_points.append(next_point)
+            if self.pen: self.line_segs.append([self.prev_points[-2], self.prev_points[-1]])
+
     def move(self, distance):
         extrusion = distance * self.density
         dx = distance * math.cos(self.heading)
         dy = distance * math.sin(self.heading)
         if self.pen:
             self.do(self.G1xye.format(x=dx, y=dy, e=extrusion))
+            self.record_move(dx, dy)
         else:
             self.do(self.G1xy.format(x=dx, y=dy))
 
@@ -82,6 +96,7 @@ class ExtruderTurtle:
         dy = distance * math.sin(self.heading)
         if self.pen:
             self.do(self.G1xyze.format(x=dx, y=dy, z=height, e=extrusion))
+            self.record_move(dx, dy)
         else:
             self.do(self.G1xyz.format(x=dx, y=dy, z=height))
 
