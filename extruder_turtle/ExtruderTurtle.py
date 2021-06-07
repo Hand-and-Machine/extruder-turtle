@@ -41,7 +41,7 @@ class ExtruderTurtle:
                     hotend_temp=215,
                     bed_temp=60
                     ):
-        if self.track_history: self.prev_points = [(x,y)]
+        if self.track_history: self.prev_points = [(x,y,0)]
         self.out_file = open(self.out_filename, 'w+')
         self.initseq_file = open(self.initseq_filename, 'r')
         self.do(self.initseq_file.read().format(**locals()))
@@ -73,10 +73,10 @@ class ExtruderTurtle:
         self.heading += theta
         self.heading = self.heading % (2*math.pi)
 
-    def record_move(self, dx, dy):
+    def record_move(self, dx, dy, dz=0):
         if self.track_history:
             prev_point = self.prev_points[-1]
-            next_point = (prev_point[0]+dx, prev_point[1]+dy) 
+            next_point = (prev_point[0]+dx, prev_point[1]+dy, prev_point[2]+dz) 
             self.prev_points.append(next_point)
             if self.pen: self.line_segs.append([self.prev_points[-2], self.prev_points[-1]])
 
@@ -84,9 +84,9 @@ class ExtruderTurtle:
         extrusion = distance * self.density
         dx = distance * math.cos(self.heading)
         dy = distance * math.sin(self.heading)
+        self.record_move(dx, dy)
         if self.pen:
             self.do(self.G1xye.format(x=dx, y=dy, e=extrusion))
-            self.record_move(dx, dy)
         else:
             self.do(self.G1xy.format(x=dx, y=dy))
 
@@ -94,14 +94,15 @@ class ExtruderTurtle:
         extrusion = self.density * (distance**2 + height**2)**(1/2)
         dx = distance * math.cos(self.heading)
         dy = distance * math.sin(self.heading)
+        self.record_move(dx, dy)
         if self.pen:
             self.do(self.G1xyze.format(x=dx, y=dy, z=height, e=extrusion))
-            self.record_move(dx, dy)
         else:
             self.do(self.G1xyz.format(x=dx, y=dy, z=height))
 
     def lift(self, height):
         self.do(self.G1z.format(z=height))
+        self.record_move(0, 0, dz=height)
 
     def dwell(self, ms):
         self.do(self.G4p.format(p=ms))
