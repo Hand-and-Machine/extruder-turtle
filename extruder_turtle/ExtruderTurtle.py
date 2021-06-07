@@ -94,7 +94,7 @@ class ExtruderTurtle:
         extrusion = self.density * (distance**2 + height**2)**(1/2)
         dx = distance * math.cos(self.heading)
         dy = distance * math.sin(self.heading)
-        self.record_move(dx, dy)
+        self.record_move(dx, dy, dz=height)
         if self.pen:
             self.do(self.G1xyze.format(x=dx, y=dy, z=height, e=extrusion))
         else:
