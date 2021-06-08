@@ -16,6 +16,7 @@ class ExtruderTurtle:
         self.density = 0.05
         self.pen = True
 
+        self.write_gcode = True
         self.track_history = False
         self.prev_points = []
         self.line_segs = []
@@ -33,7 +34,8 @@ class ExtruderTurtle:
         self.out_filename = filename
 
     def do(self, cmd):
-        self.out_file.write(cmd + "\n")
+        if self.write_gcode:
+            self.out_file.write(cmd + "\n")
 
     def setup(self, x=0,
                     y=0,
@@ -42,16 +44,18 @@ class ExtruderTurtle:
                     bed_temp=60
                     ):
         if self.track_history: self.prev_points = [(x,y,0)]
-        self.out_file = open(self.out_filename, 'w+')
-        self.initseq_file = open(self.initseq_filename, 'r')
-        self.do(self.initseq_file.read().format(**locals()))
-        self.initseq_file.close()
+        if self.write_gcode:
+            self.out_file = open(self.out_filename, 'w+')
+            self.initseq_file = open(self.initseq_filename, 'r')
+            self.do(self.initseq_file.read().format(**locals()))
+            self.initseq_file.close()
 
     def finish(self):
-        self.finalseq_file = open(self.finalseq_filename, 'r')
-        self.do(self.finalseq_file.read())
-        self.finalseq_file.close()
-        self.out_file.close()
+        if self.write_gcode:
+            self.finalseq_file = open(self.finalseq_filename, 'r')
+            self.do(self.finalseq_file.read())
+            self.finalseq_file.close()
+            self.out_file.close()
 
     def set_density(self, density):
         self.density = density
