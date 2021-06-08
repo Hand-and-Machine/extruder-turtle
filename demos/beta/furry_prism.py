@@ -7,7 +7,7 @@ HAIRLENGTH = 1
 HAIR_ANGLE = math.pi/3
 NUM_HAIRS = 15
 NUM_SIDES = 5
-LAYERS = 150
+LAYERS = 50
 dx = SIDELENGTH/(NUM_HAIRS+1)
 
 t = ExtruderTurtle()
@@ -15,7 +15,8 @@ t = ExtruderTurtle()
 ## Set up the turtle
 t.name("furry-prism.gcode")
 t.setup(x=100, y=100)
-t.rate(700)
+t.rate(1000)
+t.set_density(0.03)
 
 for l in range(LAYERS):
     ## Draw a pentagon
