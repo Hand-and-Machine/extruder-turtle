@@ -1,6 +1,6 @@
 # extruder-turtle
 
-A Python package that uses the principles of Turtle Geometry to generate GCODE for 3d-printed solids.
+A Python package that uses the principles of 3D Turtle Geometry to generate GCODE for 3D-printed solids.
 
 ## Basic functionality
 
@@ -12,28 +12,32 @@ Here are several methods of the `ExtruderTurtle` class that are used to set up y
 
 - The constructor `t = ExtruderTurtle()` which takes no arguments. The turtle is constructed with a few default values in place:
     - The default output file name `turtle.gcode`
-    - Default starting `heading` (the direction of the turtle) is `0`.
+    - Default starting orientation, consisting of three vectors: `forward_vec` (which you may imagine as pointing out of the turtle's nose), `up_vec` (normal to the turtle's shell), and `left_vec` (pointing out of the turtle's left side).
     - Default starting `feedrate` (the rate of movement) is `0`.
     - Default starting `density` (ratio of mm extruded to mm moved) is `0`.
-    - Default starting `pendown` value (whether or not the turtle extrudes while moving) is `True`
-- To change the name of the output file, use `t.name("your-filename.gcode")`
+    - Default starting `pendown` value (whether or not the turtle extrudes while moving) is `True`.
+- To change the name of the output file, use `t.name("your-filename.gcode")`.
 - To write the initialization sequence (which moves the turtle to the initial position, runs the mesh bed leveling, heats the bed and extruder, etc) to the output file, run `t.setup()`, which takes several optional arguments:
     - `x=0` is the starting x-value
     - `y=0` is the starting y-value
     - `feedrate=100` is the starting feedrate
     - `hotend_temp=215` is the default temp of the hotend
     - `bed_temp=60` is the default temp of the bed
-- To write the finalization sequence to the output file, use `t.finish()` (which cools down the bed, moves the extruder up, etc)
+- To write the finalization sequence to the output file, use `t.finish()` (which cools down the bed, moves the extruder up, etc).
 
 ### Turtle actions
 
 Here are the basic built-in actions of the turtle:
 
-- `t.move(distance)` moves the turtle forward a distance of `distance`, extruding along the way if the pen is down.
-- `t.left(theta)` turns the turtle left by an angle `theta`.
-- `t.right(theta)` turns the turtle right by an angle `theta`.
+- `t.forward(distance)` moves the turtle forward a distance of `distance`, extruding along the way if the pen is down.
+- `t.left(theta)` turns the turtle left by an angle `theta`. This is just an easier-to-remember alias for `t.yaw(theta)`.
+- `t.right(theta)` turns the turtle right by an angle `theta`. Alias for `t.yaw(-theta)`.
+- `t.pitch_up(theta)` tilts the turtle "upwards" in the direction where its eyes would point. Alias for `t.pitch(theta)`.
+- `t.pitch_down(theta)` tilts the turtle "downwards". Alias for `t.pitch(-theta)`.
+- `t.roll_left(theta)` rolls the turtle towards its left side. Alias for `t.roll(-theta).
+- `t.roll_right(theta)` rolls the turtle towards its right side. Alias for `t.roll(theta)`.
 - `t.lift(height)` lifts the turtle up by a distance `height`. Usually used to move to the next layer of the print.
-- `t.move_lift(distance, height)` moves the turtle forward by a distance `distance` and up by a distance `height`, extruding along the way if the pen is down.
+- `t.forward_lift(distance, height)` moves the turtle forward by a distance `distance` and up by a distance `height`, extruding along the way if the pen is down. Note that "up" here refers to the direction normal to the turtle's shell, not necessarily in the positive-z direction.
 - `t.penup()` lifts the pen up (extrusion will not occur until the pen is back down).
 - `t.pendown()` puts the pen down (extrusion will occur until the pen is lifted up again).
 - `t.do(command)` will write a manually-written custom GCODE command `command` to the output file.
@@ -52,11 +56,11 @@ You may use Rhino/Grasshopper to visualize a preview of your 3D print before sen
 
 The extruder_turtle library does not make use of any libraries that require distributions later than Python 2.7, so it can be used with RhinoPython. However, it needs to be installed separately, in a special directory containing Python packages used by Rhino/Grasshopper. On Mac OS, RhinoPython libraries are installed in the directory
 
-`/Users/YOUR_USERNAME/Applications/Rhino 7.app/Contents/Frameworks/RhCore.framework/Versions/Current/Resources/ManagedPlugIns/RhinoDLR_Python.rhp/Lib`
+`/Users/YOUR_USERNAME/Applications/Rhino\ 7.app/Contents/Frameworks/RhCore.framework/Versions/Current/Resources/ManagedPlugIns/RhinoDLR_Python.rhp/Lib`
 
 You can simply save a copy of `ExtruderTurtle.py` to the `Lib` folder, and you should be able to use it from within Grasshopper. You may also need to add a folder called `data` containing `initseq.gcode` and `finalseq.gcode`, since these files are necessary for using the turtle to generate GCODE. Note that you may need to run Rhino as admin in order for it to have permission to open these files while running.
 
-An example visualization with Grasshopper is given in `turtletest.gh` in the `demos` folder (it shows how to visualize an example identical to the one generated in `demos/furry_prism.py`).
+An example visualization with Grasshopper is given in `turtletest.gh` in the `demos` folder (it shows how to visualize an example identical to the one generated in `demos/seven_star.py`).
 
 ## Example code
 

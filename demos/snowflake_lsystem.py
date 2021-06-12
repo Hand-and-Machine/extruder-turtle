@@ -26,7 +26,7 @@ t.rate(700)
 
 for l in range(40):
     for r in instr:
-        if r == "f": t.move(sidelength)
+        if r == "f": t.forward(sidelength)
         elif r == "r": t.right(math.pi/3)
         elif r == "l": t.left(math.pi/3)
     t.lift(0.3)

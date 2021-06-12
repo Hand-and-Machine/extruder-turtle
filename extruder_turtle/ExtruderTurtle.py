@@ -126,6 +126,17 @@ class ExtruderTurtle:
         else:
             self.do(self.G1xyz.format(x=dx, y=dy, z=dz))
 
+    def forward_lift(self, distance, height):
+        extrusion = math.sqrt(distance**2+height**2)
+        dx = distance * self.forward_vec[0] + height * self.up_vec[0]
+        dy = distance * self.forward_vec[1] + height * self.up_vec[1]
+        dz = distance * self.forward_vec[2] + height * self.up_vec[2]
+        self.record_move(dx, dy, dz)
+        if self.pen:
+            self.do(self.G1xyze.format(x=dx, y=dy, z=dz, e=extrusion))
+        else:
+            self.do(self.G1xyz.format(x=dx, y=dy, z=dz))
+
     def backward(self, distance):
         self.forward(-distance)
 
