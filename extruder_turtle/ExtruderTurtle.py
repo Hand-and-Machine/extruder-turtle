@@ -11,7 +11,10 @@ class ExtruderTurtle:
         self.out_file = False;
         self.initseq_file = False;
         self.finalseq_file = False;
-        self.heading = 0
+        
+        self.forward_vec = [1, 0, 0]
+        self.left_vec = [0, 1, 0]
+        self.up_vec = [0, 0, 1]
         self.feedrate = 0
         self.density = 0.05
         self.pen = True
@@ -66,16 +69,26 @@ class ExtruderTurtle:
     def pendown(self):
         self.pen = True
 
+    def yaw(self, theta):
+        new_forward = [math.cos(theta)*self.forward_vec[i] + math.sin(theta)*self.left_vec[i] for i in range(3)]
+        new_left = [math.cos(theta)*self.left_vec[i] - math.sin(theta)*self.forward_vec[i] for i in range(3)]
+        self.forward_vec = new_forward
+        self.left_vec = new_left
+
+    def pitch(self, theta):
+        new_forward = [math.cos(theta)*self.forward_vec[i] + math.sin(theta)*self.up_vec[i] for i in range(3)]
+        new_up = [math.cos(theta)*self.up_vec[i] - math.sin(theta)*self.forward_vec[i] for i in range(3)]
+        self.forward_vec = new_forward
+        self.up_vec = new_up
+
+    def roll(self, theta):
+        new_left = [math.cos(theta)*self.left_vec[i] + math.sin(theta)*self.up_vec[i] for i in range(3)]
+        new_up = [math.cos(theta)*self.up_vec[i] - math.sin(theta)*self.left_vec[i] for i in range(3)]
+        self.left_vec = new_left
+        self.up_vec = new_up
+
     def rate(self, feedrate):
         self.do(self.G1f.format(f=feedrate))
-
-    def right(self, theta):
-        self.heading += -theta
-        self.heading = self.heading % (2*math.pi)
-
-    def left(self, theta):
-        self.heading += theta
-        self.heading = self.heading % (2*math.pi)
 
     def record_move(self, dx, dy, dz=0):
         if self.track_history:
@@ -84,7 +97,7 @@ class ExtruderTurtle:
             self.prev_points.append(next_point)
             if self.pen: self.line_segs.append([self.prev_points[-2], self.prev_points[-1]])
 
-    def move(self, distance):
+    def forward(self, distance):
         extrusion = distance * self.density
         dx = distance * math.cos(self.heading)
         dy = distance * math.sin(self.heading)
