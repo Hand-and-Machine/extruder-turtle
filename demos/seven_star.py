@@ -11,7 +11,7 @@ t.rate(700)
 for l in range(30):
     ## Draw a seven-pointed star
     for k in range(7):
-        t.move(50)
+        t.forward(50)
         t.right(6*math.pi/7)
 
     ## Move to the next layer

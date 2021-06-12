@@ -87,10 +87,28 @@ class ExtruderTurtle:
         self.left_vec = new_left
         self.up_vec = new_up
 
+    def left(self, theta):
+        self.yaw(theta)
+
+    def right(self, theta):
+        self.yaw(-theta)
+
+    def pitch_up(self, theta):
+        self.pitch(theta)
+
+    def pitch_down(self, theta):
+        self.pitch(-theta)
+
+    def roll_left(self, theta):
+        self.roll(-theta)
+
+    def roll_right(self, theta):
+        self.roll(theta)
+
     def rate(self, feedrate):
         self.do(self.G1f.format(f=feedrate))
 
-    def record_move(self, dx, dy, dz=0):
+    def record_move(self, dx, dy, dz):
         if self.track_history:
             prev_point = self.prev_points[-1]
             next_point = (prev_point[0]+dx, prev_point[1]+dy, prev_point[2]+dz) 
@@ -99,27 +117,21 @@ class ExtruderTurtle:
 
     def forward(self, distance):
         extrusion = distance * self.density
-        dx = distance * math.cos(self.heading)
-        dy = distance * math.sin(self.heading)
-        self.record_move(dx, dy)
+        dx = distance * self.forward_vec[0]
+        dy = distance * self.forward_vec[1]
+        dz = distance * self.forward_vec[2]
+        self.record_move(dx, dy, dz)
         if self.pen:
-            self.do(self.G1xye.format(x=dx, y=dy, e=extrusion))
+            self.do(self.G1xyze.format(x=dx, y=dy, z=dz, e=extrusion))
         else:
-            self.do(self.G1xy.format(x=dx, y=dy))
+            self.do(self.G1xyz.format(x=dx, y=dy, z=dz))
 
-    def move_lift(self, distance, height):
-        extrusion = self.density * (distance**2 + height**2)**(1/2)
-        dx = distance * math.cos(self.heading)
-        dy = distance * math.sin(self.heading)
-        self.record_move(dx, dy, dz=height)
-        if self.pen:
-            self.do(self.G1xyze.format(x=dx, y=dy, z=height, e=extrusion))
-        else:
-            self.do(self.G1xyz.format(x=dx, y=dy, z=height))
+    def backward(self, distance):
+        self.forward(-distance)
 
     def lift(self, height):
         self.do(self.G1z.format(z=height))
-        self.record_move(0, 0, dz=height)
+        self.record_move(0, 0, height)
 
     def dwell(self, ms):
         self.do(self.G4p.format(p=ms))

@@ -18,7 +18,7 @@ t.rate(700)
 
 ## Continue until the radius has shrunken to zero
 while radius>0:
-    t.move(dx)
+    t.forward(dx)
     t.right(dtheta)
     radius += dr
     dx = radius * dtheta

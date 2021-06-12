@@ -20,7 +20,7 @@ for l in range(50):
     t.left(dtheta/2)
     for k in range(N):
         t.right(dtheta)
-        t.move(dx)
+        t.forward(dx)
     t.right(dtheta/2)
 
     ## Draw a random chord on the circle
@@ -28,7 +28,7 @@ for l in range(50):
     t.set_density(0.03)    
     rand_angle = dtheta*random.randint(1,N)/2
     t.right(rand_angle)
-    t.move(DIAMETER*math.sin(rand_angle))
+    t.forward(DIAMETER*math.sin(rand_angle))
     t.right(rand_angle)
 
     ## Move to the next layer
