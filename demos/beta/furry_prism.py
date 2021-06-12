@@ -2,12 +2,16 @@ from extruder_turtle import ExtruderTurtle
 import math
 import random
 
-SIDELENGTH = 25
 HAIRLENGTH = 1
 HAIR_ANGLE = math.pi/3
+EXT_DENSITY = 0.05
+FEEDRATE = 500
 NUM_HAIRS = 15
+LAYER_HEIGHT = 0.15
+
+SIDELENGTH = 25
 NUM_SIDES = 5
-LAYERS = 50
+LAYERS = 100
 dx = SIDELENGTH/(NUM_HAIRS+1)
 
 t = ExtruderTurtle()
@@ -15,8 +19,8 @@ t = ExtruderTurtle()
 ## Set up the turtle
 t.name("furry-prism.gcode")
 t.setup(x=100, y=100)
-t.rate(1000)
-t.set_density(0.03)
+t.rate(FEEDRATE)
+t.set_density(EXT_DENSITY)
 
 for l in range(LAYERS):
     ## Draw a pentagon
@@ -31,7 +35,7 @@ for l in range(LAYERS):
         t.right(2*math.pi/NUM_SIDES)
 
     ## Move to the next layer
-    t.lift(0.3)
+    t.lift(LAYER_HEIGHT)
 
 ## Save to a GCODE file
 t.finish()

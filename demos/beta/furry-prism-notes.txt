@@ -1,2 +1,9 @@
 the first textile-like prism was produced by accident
 now Leah wants me to tweak parameters to see how it affects the texture, flexibility, other material properties etc
+parameters to adjust:
+    - spike length
+    - spike angle
+    - extrusion density
+    - feedrate
+    - number of spikes
+    - layer height
