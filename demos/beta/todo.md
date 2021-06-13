@@ -1,0 +1,24 @@
+Here are some ideas of structures to try generating with ExtruderTurtle, which came from other papers on the topic of 3D printing:
+- hair/fur-like structure
+    - different hair heights can yield a fuzzy "surface"
+    - hair on curved surfaces
+    - printed (paint)brush
+    - velcro-like hair with an adhesion property
+    - control hair stiffness?
+    - control hair direction to design a "stick-slip" mechanism
+    - differentiate direction of movement digitally?
+    - curly/spiral hair?
+    - troll/horse with textured hair/bristles
+    - use blow-heating to apply post-print manipulations
+- use moiré pattern to create an interesting optical effect?
+- control extruder height for interesting textures
+    - stepping out of motor
+    - stable road
+    - zigzag road
+    - coil-like road
+    - frizzy hair-like road
+    - straight hair-like road
+    - wavy/bendy sheet?
+- "quick" wireframe structures?
+- bas-reliefs that optically mimic 3D structures
+- deformable objects that make use of micromaterial structures
