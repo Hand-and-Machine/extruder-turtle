@@ -15,6 +15,8 @@ class ExtruderTurtle:
         self.forward_vec = [1, 0, 0]
         self.left_vec = [0, 1, 0]
         self.up_vec = [0, 0, 1]
+        self.use_degrees = False
+    
         self.feedrate = 0
         self.density = 0.05
         self.pen = True
@@ -23,6 +25,7 @@ class ExtruderTurtle:
         self.track_history = False
         self.prev_points = []
         self.line_segs = []
+        self.extrusion_history = []
 
         self.G1xyze = "G1 X{x} Y{y} Z{z} E{e}"
         self.G1xyz = "G1 X{x} Y{y} Z{z}"
@@ -69,69 +72,77 @@ class ExtruderTurtle:
     def pendown(self):
         self.pen = True
 
-    def yaw(self, theta):
+    def yaw(self, angle):
+        theta = angle
+        if self.use_degrees: theta = angle * math.pi/180
         new_forward = [math.cos(theta)*self.forward_vec[i] + math.sin(theta)*self.left_vec[i] for i in range(3)]
         new_left = [math.cos(theta)*self.left_vec[i] - math.sin(theta)*self.forward_vec[i] for i in range(3)]
         self.forward_vec = new_forward
         self.left_vec = new_left
 
-    def pitch(self, theta):
+    def pitch(self, angle):
+        theta = angle
+        if self.use_degrees: theta = angle * math.pi/180
         new_forward = [math.cos(theta)*self.forward_vec[i] + math.sin(theta)*self.up_vec[i] for i in range(3)]
         new_up = [math.cos(theta)*self.up_vec[i] - math.sin(theta)*self.forward_vec[i] for i in range(3)]
         self.forward_vec = new_forward
         self.up_vec = new_up
 
-    def roll(self, theta):
+    def roll(self, angle):
+        theta = angle
+        if self.use_degrees: theta = angle * math.pi/180
         new_left = [math.cos(theta)*self.left_vec[i] + math.sin(theta)*self.up_vec[i] for i in range(3)]
         new_up = [math.cos(theta)*self.up_vec[i] - math.sin(theta)*self.left_vec[i] for i in range(3)]
         self.left_vec = new_left
         self.up_vec = new_up
 
-    def left(self, theta):
-        self.yaw(theta)
+    def left(self, angle):
+        self.yaw(angle)
 
-    def right(self, theta):
-        self.yaw(-theta)
+    def right(self, angle):
+        self.yaw(-angle)
 
-    def pitch_up(self, theta):
-        self.pitch(theta)
+    def pitch_up(self, angle):
+        self.pitch(angle)
 
-    def pitch_down(self, theta):
-        self.pitch(-theta)
+    def pitch_down(self, angle):
+        self.pitch(-angle)
 
-    def roll_left(self, theta):
-        self.roll(-theta)
+    def roll_left(self, angle):
+        self.roll(-angle)
 
-    def roll_right(self, theta):
-        self.roll(theta)
+    def roll_right(self, angle):
+        self.roll(angle)
 
     def rate(self, feedrate):
         self.do(self.G1f.format(f=feedrate))
 
-    def record_move(self, dx, dy, dz):
+    def record_move(self, dx, dy, dz, de=0):
         if self.track_history:
             prev_point = self.prev_points[-1]
             next_point = (prev_point[0]+dx, prev_point[1]+dy, prev_point[2]+dz) 
             self.prev_points.append(next_point)
-            if self.pen: self.line_segs.append([self.prev_points[-2], self.prev_points[-1]])
+            if self.pen: 
+                self.line_segs.append([self.prev_points[-2], self.prev_points[-1]])
+                self.extrusion_history.append(de)
 
     def forward(self, distance):
         extrusion = distance * self.density
         dx = distance * self.forward_vec[0]
         dy = distance * self.forward_vec[1]
         dz = distance * self.forward_vec[2]
-        self.record_move(dx, dy, dz)
+        self.record_move(dx, dy, dz, de=extrusion)
         if self.pen:
             self.do(self.G1xyze.format(x=dx, y=dy, z=dz, e=extrusion))
         else:
             self.do(self.G1xyz.format(x=dx, y=dy, z=dz))
 
     def forward_lift(self, distance, height):
-        extrusion = math.sqrt(distance**2+height**2)
+        extrusion = math.sqrt(distance**2+height**2) * self.density
         dx = distance * self.forward_vec[0] + height * self.up_vec[0]
         dy = distance * self.forward_vec[1] + height * self.up_vec[1]
         dz = distance * self.forward_vec[2] + height * self.up_vec[2]
-        self.record_move(dx, dy, dz)
+        self.record_move(dx, dy, dz, de=extrusion)
         if self.pen:
             self.do(self.G1xyze.format(x=dx, y=dy, z=dz, e=extrusion))
         else:
