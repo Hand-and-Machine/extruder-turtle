@@ -127,10 +127,13 @@ class ExtruderTurtle:
                 self.extrusion_history.append(de)
 
     def forward(self, distance):
-        extrusion = distance * self.density
+        extrusion = abs(distance) * self.density
         dx = distance * self.forward_vec[0]
         dy = distance * self.forward_vec[1]
         dz = distance * self.forward_vec[2]
+        dx = round(dx, 5)
+        dy = round(dy, 5)
+        dz = round(dz, 5)
         self.record_move(dx, dy, dz, de=extrusion)
         if self.pen:
             self.do(self.G1xyze.format(x=dx, y=dy, z=dz, e=extrusion))
@@ -142,6 +145,9 @@ class ExtruderTurtle:
         dx = distance * self.forward_vec[0] + height * self.up_vec[0]
         dy = distance * self.forward_vec[1] + height * self.up_vec[1]
         dz = distance * self.forward_vec[2] + height * self.up_vec[2]
+        dx = round(dx, 5)
+        dy = round(dy, 5)
+        dz = round(dz, 5)
         self.record_move(dx, dy, dz, de=extrusion)
         if self.pen:
             self.do(self.G1xyze.format(x=dx, y=dy, z=dz, e=extrusion))
