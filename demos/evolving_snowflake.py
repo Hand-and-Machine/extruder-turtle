@@ -24,13 +24,13 @@ for g in range(NUM_GENS):
         long_length = (sidelength - gap_length)/2
         for r in instr:
             if r == "f":
-                t.move(long_length)
+                t.forward(long_length)
                 t.left(math.pi/3)
-                t.move(gap_length)
+                t.forward(gap_length)
                 t.right(2*math.pi/3)
-                t.move(gap_length)
+                t.forward(gap_length)
                 t.left(math.pi/3)
-                t.move(long_length)
+                t.forward(long_length)
             elif r == "r":
                 t.right(math.pi/3)
             elif r == "l":

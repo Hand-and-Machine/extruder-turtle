@@ -18,3 +18,23 @@ G91                     ; relative coordinates for X,Y,Z axes
 
 
 G1 F700
+G1 Z1
+G1 X100 Y0 Z0 E20.0
+G1 Z10
+G1 X1.2246467991473533e-15 Y20.0 Z0.0
+G1 Z-10
+G1 Z1
+G1 X-100.0 Y1.2246467991473532e-14 Z0.0 E20.0
+G1 Z10
+G1 X1.2246467991473533e-15 Y20.0 Z0.0
+G1 Z-10
+G1 Z1
+G1 X100.0 Y0.0 Z0.0 E20.0
+
+; FINALIZATION SEQUENCE
+M104 S0                 ; cool down hotend
+M140 S0                 ; cool down bed
+M107                    ; turn off fan
+G1 Z100                 ; move extruder above print
+M84                     ; disable motors
+
