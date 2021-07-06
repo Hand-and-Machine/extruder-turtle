@@ -3,8 +3,8 @@ import math
 
 HAIR_SPACE = 2
 HAIR_ROWS = 10
-LIFT_DIST = 50 
-EXTRUDE_AMT = 0.6
+LIFT_DIST = 10 
+EXTRUDE_AMT = 0.5
 
 t = ExtruderTurtle()
 
@@ -48,8 +48,8 @@ while hairs > 0:
             t.lift(2)
             t.extrude(-0.1)
             t.lift(LIFT_DIST-2)
-            t.pendown()
-            t.dwell(1000)    # 100
+            ## t.pendown()
+            t.dwell(100)    # 100
         t.left(math.pi/2)
     hairs += -1
 t.finish()
