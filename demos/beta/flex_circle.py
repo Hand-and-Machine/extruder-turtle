@@ -4,7 +4,7 @@ import random
 
 HAIRLENGTH = 1
 HAIR_ANGLE = math.pi/2
-EXT_DENSITY = 0.05
+EXT_DENSITY = 0.02      # 0.05
 FEEDRATE = 700
 NUM_HAIRS = 80
 LAYER_HEIGHT = 0.3
@@ -18,7 +18,7 @@ dx = DIAMETER*math.sin(dtheta/2)
 t = ExtruderTurtle()
 
 ## Set up the turtle
-t.name("furry-circle.gcode")
+t.name("flex-circle.gcode")
 t.setup(x=100, y=100)
 t.rate(FEEDRATE)
 t.set_density(EXT_DENSITY)
@@ -26,13 +26,13 @@ t.set_density(EXT_DENSITY)
 for l in range(LAYERS):
     for k in range(NUM_HAIRS):
         t.right(dtheta)
-        t.move(dx)
+        t.forward(dx)
         t.left(HAIR_ANGLE)
-        t.move(HAIRLENGTH)
+        t.forward(HAIRLENGTH)
         t.dwell(50)
-        t.move(-2*HAIRLENGTH)
+        t.forward(-2*HAIRLENGTH)
         t.dwell(50)
-        t.move(HAIRLENGTH)
+        t.forward(HAIRLENGTH)
         t.right(HAIR_ANGLE)
 
     ## Move to the next layer

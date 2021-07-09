@@ -13,7 +13,6 @@ for l in range(30):
     for k in range(7):
         t.forward(50)
         t.right(6*math.pi/7)
-        print(t.forward_vec)
 
     ## Move to the next layer
     t.lift(0.3)

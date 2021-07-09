@@ -35,6 +35,8 @@ class ExtruderTurtle:
         self.G1f = "G1 F{f}"
         self.G1z = "G1 Z{z}"
         self.G4p = "G4 P{p}"
+        self.M104s = "M104 S{s}\nM109 S{s}"
+        self.M140s = "M140 S{s}\nM190 S{s}"
 
     def name(self, filename):
         self.out_filename = filename
@@ -166,3 +168,9 @@ class ExtruderTurtle:
 
     def extrude(self, quantity):
         self.do(self.G1e.format(e=quantity))
+
+    def bed_temp(self, temp):
+        self.do(self.M140s.format(s=temp))
+
+    def extruder_temp(self, temp):
+        self.do(self.M104s.format(s=temp))
