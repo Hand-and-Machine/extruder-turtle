@@ -6,7 +6,7 @@ class ExtruderTurtle:
 
     def __init__(self):
         self.out_filename = "turtle.gcode"
-        self.initseq_filename = os.path.join(__location__, "data/initseq.gcode")
+        self.initseq_filename = os.path.join(__location__, "data/initseqEnder.gcode")
         self.finalseq_filename = os.path.join(__location__, "data/finalseq.gcode")
         self.out_file = False;
         self.initseq_file = False;
@@ -35,6 +35,7 @@ class ExtruderTurtle:
         self.G1f = "G1 F{f}"
         self.G1z = "G1 Z{z}"
         self.G4p = "G4 P{p}"
+        self.M0 = "M0"
         self.M104s = "M104 S{s}\nM109 S{s}"
         self.M140s = "M140 S{s}\nM190 S{s}"
 
@@ -47,11 +48,12 @@ class ExtruderTurtle:
 
     def setup(self, x=0,
                     y=0,
+                    z=0,
                     feedrate=1000,
-                    hotend_temp=215,
+                    hotend_temp=205,
                     bed_temp=60
                     ):
-        if self.track_history: self.prev_points = [(x,y,0)]
+        if self.track_history: self.prev_points = [(x,y,z)]
         if self.write_gcode:
             self.out_file = open(self.out_filename, 'w+')
             self.initseq_file = open(self.initseq_filename, 'r')
@@ -165,6 +167,9 @@ class ExtruderTurtle:
 
     def dwell(self, ms):
         self.do(self.G4p.format(p=ms))
+
+    def pause_and_wait(self):
+        self.do(self.M0)
 
     def extrude(self, quantity):
         self.do(self.G1e.format(e=quantity))
