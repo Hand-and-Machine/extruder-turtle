@@ -12,6 +12,12 @@ class ExtruderTurtle:
         self.initseq_file = False;
         self.finalseq_file = False;
         
+        self.x = 0
+        self.y = 0
+        self.z = 0
+        self.net_yaw = 0
+        self.net_pitch = 0
+        self.net_roll = 0
         self.forward_vec = [1, 0, 0]
         self.left_vec = [0, 1, 0]
         self.up_vec = [0, 0, 1]
@@ -54,6 +60,9 @@ class ExtruderTurtle:
                     bed_temp=60
                     ):
         if self.track_history: self.prev_points = [(x,y,z)]
+        self.x = x
+        self.y = y
+        self.z = z
         if self.write_gcode:
             self.out_file = open(self.out_filename, 'w+')
             self.initseq_file = open(self.initseq_filename, 'r')
@@ -78,6 +87,7 @@ class ExtruderTurtle:
 
     def yaw(self, angle):
         theta = angle
+        self.net_yaw = (self.net_yaw + angle) % 2*math.pi
         if self.use_degrees: theta = angle * math.pi/180
         new_forward = [math.cos(theta)*self.forward_vec[i] + math.sin(theta)*self.left_vec[i] for i in range(3)]
         new_left = [math.cos(theta)*self.left_vec[i] - math.sin(theta)*self.forward_vec[i] for i in range(3)]
@@ -86,6 +96,7 @@ class ExtruderTurtle:
 
     def pitch(self, angle):
         theta = angle
+        self.net_pitch = (self.net_pitch + angle) % 2*math.pi
         if self.use_degrees: theta = angle * math.pi/180
         new_forward = [math.cos(theta)*self.forward_vec[i] + math.sin(theta)*self.up_vec[i] for i in range(3)]
         new_up = [math.cos(theta)*self.up_vec[i] - math.sin(theta)*self.forward_vec[i] for i in range(3)]
@@ -94,6 +105,7 @@ class ExtruderTurtle:
 
     def roll(self, angle):
         theta = angle
+        self.net_roll = (self.net_roll + angle) % 2*math.pi
         if self.use_degrees: theta = angle * math.pi/180
         new_left = [math.cos(theta)*self.left_vec[i] + math.sin(theta)*self.up_vec[i] for i in range(3)]
         new_up = [math.cos(theta)*self.up_vec[i] - math.sin(theta)*self.left_vec[i] for i in range(3)]
@@ -118,6 +130,17 @@ class ExtruderTurtle:
     def roll_right(self, angle):
         self.roll(angle)
 
+    def set_heading(yaw, pitch=0, roll=0):
+        self.forward_vec = [1, 0, 0]
+        self.left_vec = [0, 1, 0]
+        self.up_vec = [0, 0, 1]
+        self.yaw(yaw)
+        self.pitch(pitch)
+        self.roll(roll)
+
+    def change_heading(yaw=0, pitch=0, roll=0):
+        self.set_heading(self.yaw + yaw, self.pitch + pitch, self.roll + roll)
+
     def rate(self, feedrate):
         self.do(self.G1f.format(f=feedrate))
 
@@ -138,6 +161,9 @@ class ExtruderTurtle:
         dx = round(dx, 5)
         dy = round(dy, 5)
         dz = round(dz, 5)
+        self.x += dx
+        self.y += dy
+        self.z += dz
         self.record_move(dx, dy, dz, de=extrusion)
         if self.pen:
             self.do(self.G1xyze.format(x=dx, y=dy, z=dz, e=extrusion))
@@ -152,6 +178,9 @@ class ExtruderTurtle:
         dx = round(dx, 5)
         dy = round(dy, 5)
         dz = round(dz, 5)
+        self.x += dx
+        self.y += dy
+        self.z += dz
         self.record_move(dx, dy, dz, de=extrusion)
         if self.pen:
             self.do(self.G1xyze.format(x=dx, y=dy, z=dz, e=extrusion))
@@ -163,7 +192,35 @@ class ExtruderTurtle:
 
     def lift(self, height):
         self.do(self.G1z.format(z=height))
+        self.z += height
         self.record_move(0, 0, height)
+
+    def change_position(self, dx=0, dy=0, dz=0):
+        self.do(self.G1xyz.format(x=dx, y=dy, z=dz))
+
+    def set_position(self, x=False, y=False, z=False):
+        if x == False: x = self.x
+        if y == False: y = self.y
+        if z == False: z = self.z
+        self.change_position(x-self.x, y-self.y, z-self.z)
+
+    def getX(self):
+        return self.x
+
+    def getY(self):
+        return self.y
+    
+    def getZ(self):
+        return self.z
+
+    def get_yaw(self):
+        return self.net_yaw
+    
+    def get_pitch(self):
+        return self.net_pitch
+    
+    def get_roll(self):
+        return self.net_roll
 
     def dwell(self, ms):
         self.do(self.G4p.format(p=ms))
