@@ -45,6 +45,10 @@ class ExtruderTurtle:
         self.M104s = "M104 S{s}\nM109 S{s}"
         self.M140s = "M140 S{s}\nM190 S{s}"
 
+    def convert_angle(self, angle):
+        if self.use_degrees: return math.radians(angle)
+        return angle
+
     def name(self, filename):
         self.out_filename = filename
 
@@ -86,27 +90,24 @@ class ExtruderTurtle:
         self.pen = True
 
     def yaw(self, angle):
-        theta = angle
-        self.net_yaw = (self.net_yaw + angle) % 2*math.pi
-        if self.use_degrees: theta = angle * math.pi/180
+        theta = self.convert_angle(angle)
+        self.net_yaw = (self.net_yaw + theta) % 2*math.pi
         new_forward = [math.cos(theta)*self.forward_vec[i] + math.sin(theta)*self.left_vec[i] for i in range(3)]
         new_left = [math.cos(theta)*self.left_vec[i] - math.sin(theta)*self.forward_vec[i] for i in range(3)]
         self.forward_vec = new_forward
         self.left_vec = new_left
 
     def pitch(self, angle):
-        theta = angle
-        self.net_pitch = (self.net_pitch + angle) % 2*math.pi
-        if self.use_degrees: theta = angle * math.pi/180
+        theta = self.convert_angle(angle)
+        self.net_pitch = (self.net_pitch + theta) % 2*math.pi
         new_forward = [math.cos(theta)*self.forward_vec[i] + math.sin(theta)*self.up_vec[i] for i in range(3)]
         new_up = [math.cos(theta)*self.up_vec[i] - math.sin(theta)*self.forward_vec[i] for i in range(3)]
         self.forward_vec = new_forward
         self.up_vec = new_up
 
     def roll(self, angle):
-        theta = angle
-        self.net_roll = (self.net_roll + angle) % 2*math.pi
-        if self.use_degrees: theta = angle * math.pi/180
+        theta = self.convert_angle(angle)
+        self.net_roll = (self.net_roll + theta) % 2*math.pi
         new_left = [math.cos(theta)*self.left_vec[i] + math.sin(theta)*self.up_vec[i] for i in range(3)]
         new_up = [math.cos(theta)*self.up_vec[i] - math.sin(theta)*self.left_vec[i] for i in range(3)]
         self.left_vec = new_left
@@ -215,12 +216,15 @@ class ExtruderTurtle:
         return self.z
 
     def get_yaw(self):
+        if self.use_degrees: return math.degrees(self.net_yaw)
         return self.net_yaw
     
     def get_pitch(self):
+        if self.use_degrees: return math.degrees(self.net_pitch)
         return self.net_pitch
     
     def get_roll(self):
+        if self.use_degrees: return math.degrees(self.net_roll)
         return self.net_roll
 
     def dwell(self, ms):
