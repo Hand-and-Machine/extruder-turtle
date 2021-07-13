@@ -28,7 +28,7 @@ for l in range(50):
 
 for x in range(60):
     prog = x/60
-    frond_length = prog**2 * 15
+    frond_length = prog**4 * 20
     for l in range(10):
         t.extrude(0.1)
         t.dwell(100)
