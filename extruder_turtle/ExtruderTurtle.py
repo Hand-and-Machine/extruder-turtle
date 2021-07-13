@@ -15,9 +15,6 @@ class ExtruderTurtle:
         self.x = 0
         self.y = 0
         self.z = 0
-        self.net_yaw = 0
-        self.net_pitch = 0
-        self.net_roll = 0
         self.forward_vec = [1, 0, 0]
         self.left_vec = [0, 1, 0]
         self.up_vec = [0, 0, 1]
@@ -91,7 +88,6 @@ class ExtruderTurtle:
 
     def yaw(self, angle):
         theta = self.convert_angle(angle)
-        self.net_yaw = (self.net_yaw + theta) % 2*math.pi
         new_forward = [math.cos(theta)*self.forward_vec[i] + math.sin(theta)*self.left_vec[i] for i in range(3)]
         new_left = [math.cos(theta)*self.left_vec[i] - math.sin(theta)*self.forward_vec[i] for i in range(3)]
         self.forward_vec = new_forward
@@ -99,7 +95,6 @@ class ExtruderTurtle:
 
     def pitch(self, angle):
         theta = self.convert_angle(angle)
-        self.net_pitch = (self.net_pitch + theta) % 2*math.pi
         new_forward = [math.cos(theta)*self.forward_vec[i] + math.sin(theta)*self.up_vec[i] for i in range(3)]
         new_up = [math.cos(theta)*self.up_vec[i] - math.sin(theta)*self.forward_vec[i] for i in range(3)]
         self.forward_vec = new_forward
@@ -107,7 +102,6 @@ class ExtruderTurtle:
 
     def roll(self, angle):
         theta = self.convert_angle(angle)
-        self.net_roll = (self.net_roll + theta) % 2*math.pi
         new_left = [math.cos(theta)*self.left_vec[i] + math.sin(theta)*self.up_vec[i] for i in range(3)]
         new_up = [math.cos(theta)*self.up_vec[i] - math.sin(theta)*self.left_vec[i] for i in range(3)]
         self.left_vec = new_left
@@ -216,15 +210,30 @@ class ExtruderTurtle:
         return self.z
 
     def get_yaw(self):
-        if self.use_degrees: return math.degrees(self.net_yaw)
-        return self.net_yaw
+        x, y, z = self.forward_vec
+        net_yaw = math.atan2(y, x)
+        if self.use_degrees: return math.degrees(net_yaw)
+        return net_yaw
     
     def get_pitch(self):
-        if self.use_degrees: return math.degrees(self.net_pitch)
+        x, y, z = self.forward_vec
+        r = math.sqrt(x**2+y**2)
+        net_pitch = math.atan2(z, r)
+        if self.use_degrees: return math.degrees(net_pitch)
         return self.net_pitch
-    
+   
     def get_roll(self):
-        if self.use_degrees: return math.degrees(self.net_roll)
+        net_yaw = self.get_yaw()
+        net_pitch = self.get_pitch()
+        if self.use_degrees:
+            net_yaw = math.radians(net_yaw)
+            net_pitch = math.radians(net_pitch)
+        left_vech = [-math.sin(net_yaw), math.cos(net_yaw), 0]
+        up_vech = [-math.sin(net_pitch)*math.cos(net_yaw), -math.sin(net_pitch)*math.sin(net_yaw), math.cos(net_pitch)]
+        y = sum([self.left_vec[i]*up_vech[i] for i in range(3)])
+        x = sum([self.left_vec[i]*left_vech[i] for i in range(3)])
+        net_roll = math.atan2(y, x)
+        if self.use_degrees: return math.degrees(net_roll)
         return self.net_roll
 
     def dwell(self, ms):
