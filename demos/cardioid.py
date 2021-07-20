@@ -22,7 +22,7 @@ for l in range(N-1):
     t.left(dtheta/2)
     for k in range(N):
         t.right(dtheta)
-        t.move(dx)
+        t.forward(dx)
     t.right(dtheta/2)
     
     ## Draw several chords
@@ -31,7 +31,7 @@ for l in range(N-1):
         t.set_density(0.03)
         angle = n*dtheta/2
         t.right(angle)
-        t.move(DIAMETER*math.sin(angle))
+        t.forward(DIAMETER*math.sin(angle))
         t.right(angle)
         ## Point n is joined by a line segment to point 2n
         n = (2*n) % N
