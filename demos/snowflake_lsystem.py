@@ -20,7 +20,7 @@ for g in range(GENS):
 
 t = ExtruderTurtle()
 
-t.name("snowflake_lsystem.gcode")
+t.name("snowflake-lsystem.gcode")
 t.setup(x=100, y=100)
 t.rate(700)
 
