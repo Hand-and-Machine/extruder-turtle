@@ -82,9 +82,11 @@ class ExtruderTurtle:
 
     def penup(self):
         self.pen = False
+        self.do(self.G1e.format(e=-3))
 
     def pendown(self):
         self.pen = True
+        self.do(self.G1e.format(e=3))
 
     def yaw(self, angle):
         theta = self.convert_angle(angle)
