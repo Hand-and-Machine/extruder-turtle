@@ -4,14 +4,14 @@ import random
 
 HAIRLENGTH = 1
 HAIR_ANGLE = math.pi/2
-EXT_DENSITY = 0.02      # 0.05
+EXT_DENSITY = 0.01      # 0.02
 FEEDRATE = 700
-NUM_HAIRS = 80
+NUM_HAIRS = 200
 LAYER_HEIGHT = 0.3
 
-DIAMETER = 40
+DIAMETER = 80
 NUM_SIDES = 5
-LAYERS = 50
+LAYERS = 200
 dtheta = 2*math.pi/NUM_HAIRS
 dx = DIAMETER*math.sin(dtheta/2)
 
