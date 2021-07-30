@@ -197,21 +197,23 @@ class ExtruderTurtle:
         self.z += height
         self.record_move(0, 0, height)
 
-    def change_position(self, dx=0, dy=0, dz=0):
-        self.x += dx
-        self.y += dy
-        self.z += dz
-        self.do(self.G1xyz.format(x=dx, y=dy, z=dz, e=0))
-        self.record_move(dx, dy, dz)
-
     def set_position(self, x=False, y=False, z=False):
         if x == False: x = self.x
         if y == False: y = self.y
         if z == False: z = self.z
-        dx = x-self.x
-        dy = y-self.y
-        dz = z-self.z
-        self.change_position(dx, dy, dz)
+        dx = round(x-self.x, 5)
+        dy = round(y-self.y, 5)
+        dz = round(z-self.z, 5)
+        self.x = x
+        self.y = y
+        self.z = z
+        distance = math.sqrt(dx*dx+dy*dy+dz*dz)
+        extrusion = abs(distance) * self.density
+        self.record_move(dx, dy, dz, de=extrusion)
+        if self.pen:
+            self.do(self.G1xyze.format(x=dx, y=dy, z=dz, e=extrusion))
+        else:
+            self.do(self.G1xyz.format(x=dx, y=dy, z=dz))
 
     def getX(self):
         return self.x
