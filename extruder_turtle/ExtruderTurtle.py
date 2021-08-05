@@ -1,5 +1,6 @@
 import os
 import math
+import rhinoscriptsyntax as rs
 __location__ = os.path.dirname(__file__)
 
 class ExtruderTurtle:
@@ -25,7 +26,7 @@ class ExtruderTurtle:
         self.pen = True
 
         self.write_gcode = True
-        self.track_history = False
+        self.track_history = True
         self.prev_points = []
         self.line_segs = []
         self.extrusion_history = []
@@ -58,9 +59,12 @@ class ExtruderTurtle:
                     z=0,
                     feedrate=1000,
                     hotend_temp=205,
-                    bed_temp=60
+                    bed_temp=60,
+                    filename=False
                     ):
         if self.track_history: self.prev_points = [(x,y,z)]
+        if (filename):
+            self.out_filename = filename
         self.x = x
         self.y = y
         self.z = z
@@ -69,6 +73,7 @@ class ExtruderTurtle:
             self.initseq_file = open(self.initseq_filename, 'r')
             self.do(self.initseq_file.read().format(**locals()))
             self.initseq_file.close()
+
 
     def finish(self):
         if self.write_gcode:
@@ -82,9 +87,11 @@ class ExtruderTurtle:
 
     def penup(self):
         self.pen = False
+        self.do(self.G1e.format(e=-3))
 
     def pendown(self):
         self.pen = True
+        self.do(self.G1e.format(e=3))
 
     def yaw(self, angle):
         theta = self.convert_angle(angle)
@@ -190,15 +197,23 @@ class ExtruderTurtle:
         self.z += height
         self.record_move(0, 0, height)
 
-    def change_position(self, dx=0, dy=0, dz=0):
-        self.do(self.G1xyz.format(x=dx, y=dy, z=dz))
-        self.record_move(dx, dy, dz)
-
     def set_position(self, x=False, y=False, z=False):
         if x == False: x = self.x
         if y == False: y = self.y
         if z == False: z = self.z
-        self.change_position(x-self.x, y-self.y, z-self.z)
+        dx = round(x-self.x, 5)
+        dy = round(y-self.y, 5)
+        dz = round(z-self.z, 5)
+        self.x = x
+        self.y = y
+        self.z = z
+        distance = math.sqrt(dx*dx+dy*dy+dz*dz)
+        extrusion = abs(distance) * self.density
+        self.record_move(dx, dy, dz, de=extrusion)
+        if self.pen:
+            self.do(self.G1xyze.format(x=dx, y=dy, z=dz, e=extrusion))
+        else:
+            self.do(self.G1xyz.format(x=dx, y=dy, z=dz))
 
     def getX(self):
         return self.x
@@ -239,6 +254,25 @@ class ExtruderTurtle:
     def dwell(self, ms):
         self.do(self.G4p.format(p=ms))
 
+    def draw_turtle(self):
+        new_forward = [math.cos(math.radians(90))*self.forward_vec[i] + math.sin(math.radians(90))*self.left_vec[i] for i in range(3)]
+        dx = 2 * new_forward[0]
+        dy = 2 * new_forward[1]
+        dz = 2 * new_forward[2]
+        point1 = rs.AddPoint(self.getX()+dx, self.getY()+dy, self.getZ()+dz)
+        new_forward = [math.cos(math.radians(-90))*self.forward_vec[i] + math.sin(math.radians(-90))*self.left_vec[i] for i in range(3)]
+        dx = 2 * new_forward[0]
+        dy = 2 * new_forward[1]
+        dz = 2 * new_forward[2]
+        point2 = rs.AddPoint(self.getX()+dx, self.getY()+dy, self.getZ()+dz)
+        dx = 5 * self.forward_vec[0]
+        dy = 5 * self.forward_vec[1]
+        dz = 5 * self.forward_vec[2]
+        point3 = rs.AddPoint(self.getX()+dx, self.getY()+dy, self.getZ()+dz)
+        points = (point1, point2, point3)
+        surface = rs.AddSrfPt(points)
+        return surface
+
     def pause_and_wait(self):
         self.do(self.M0)
 
@@ -250,3 +284,4 @@ class ExtruderTurtle:
 
     def extruder_temp(self, temp):
         self.do(self.M104s.format(s=temp))
+

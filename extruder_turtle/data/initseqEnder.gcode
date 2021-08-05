@@ -18,7 +18,8 @@ G1 F1000
 G1 0 0 .3
 ; ###############  end header  ############## 
 
-G1 X{x} Y{y} Z{z}       ; go to the starting position
+G1 X{x} Y{y} Z{z}       ; go to the starting positionG1 
+F300 E3                 ; Extrude to get ready
 G1 F{feedrate}			; set the feedrate
 M83 					; Relative extrustion
 G91                     ; relative coordinates for X,Y,Z axes
