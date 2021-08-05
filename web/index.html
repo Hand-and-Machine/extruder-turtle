@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<style type="text/css">
+
+    body {
+        background-color: #4099ef;
+    }
+
+    #content {
+        background-color: #a6e3fd;
+        padding: 20px;
+        border-radius: 10px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 5%;
+        width: 75%;
+    }
+
+    .img-and-code-div {
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        overflow: hidden;
+    }
+
+    .code-div {
+        float: left;
+        width: 50%;
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+
+    .img-div {
+        float: right;
+        width: 50%;
+        margin-top: auto;
+        margin-bottom: auto;
+        object-fit: contain;
+    }
+
+    img {
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+</style>
+</head>
+
+<body>
+
+<div id="content">
+
+<h1>Extruder-Turtle Library</h1>
+
+<p>ExtruderTurtle is a Python library that translates 3D Turtle commands into GCODE that can be run on 3D printers.</p>
+
+<ol>
+    <li>What is 3D Turtle?</li>
+    <li>What is GCODE?</li>
+    <li>How do I use ExtruderTurtle?</li>
+    <li>What can you 3D print with ExtruderTurtle?
+    <ul>
+        <li>Fractal shapes</li>
+        <li>Hairs and string art</li>
+        <li>Interesting textures</li>
+        <li>Flexible objects</li>
+        <li>Nonplanar slicing</li>
+    </ul>
+    </li>
+</ol>
+
+<h2>What is 3D Turtle?</h2>
+
+<p>Turtle Geometry is an alternative paradigm for doing geometry. Whereas Euclidean Geometry is driven by axiomatic proofs and Cartesian Geometry describes figures analytically in terms of their points, Turtle Geometry adopts a more procedural mindset, making it apt for use by programmers.</p>
+
+<p>We may conceptualize Turtle Geometry by imagining a turtle sitting on a plane, holding a pen. We may control the turtle's movement by issuing a few simple commands. For instance, we can use the command <code>FORWARD 20</code> to make the turtle move forward 20 units, or <code>RIGHT 45</code> to make the turtle turn right 45 degrees. As the turtle moves, it traces a path behind it using the pen. By combining these commands with other constructions that are common for programming languages, such as for-loops or if-statements, we can direct the turtle to draw a variety of complex and beautiful shapes. For instance, consider the following simple program, and the pleasant shape it produces:</p>
+
+<div class="img-and-code-div" style="width: 50%;">
+    <div class="code-div">
+        <code><pre>
+            REPEAT 10
+                FORWARD 20
+                RIGHT 108
+        </pre></code>
+    </div>
+    <div class="img-div">
+        <img src="img/2D_turtle_ex.png">
+    </div>
+</div>
+
+<p>If you're interested in seeing more examples like this and learning more about Turtle Geometry in general, you should check out the book <a href="https://handandmachine.cs.unm.edu/classes/Computational_Fabrication_Spring2021/readings/turtle-geometry.pdf"><i>Turtle Geometry: The Computer as a Medium for Exploring Mathematics</i></a> by Abelson and diSessa.</p>
+
+<p>The ExtruderTurtle library incorporates commands from traditional 2D Turtle Geometry, but it also uses commands from 3D Turtle, a generalization of traditional Turtle Geometry in which the Turtle can move anywhere in 3D space. The turtle can move forwards and backwards as before, but it can now rotate about three different axes. These three types of rotation are called <code>YAW</code>, <code>PITCH</code> and <code>ROLL</code>.</p>
+
+<center><img src="img/turtle_directions.png" style="width: 40%;"></center>
+
+<br style="clear:both;"/>
+
+</div>
+
+</body>
