@@ -34,6 +34,10 @@
         margin-bottom: auto;
     }
 
+    .code-div code {
+        float: left;
+    }
+
     .img-div {
         float: right;
         width: 50%;
@@ -294,6 +298,43 @@ By printing thin, free-floating strands of filament that join to the edges of a 
 <center><img src="img/cardioid.png" style="width: 30%;"></center>
 
 If the turtle is instructed to move from one point to the next without backtracking (from point 1 to 2 to 4 to 8 and so on), it isn't guaranteed that all points will be visited. For example, using N=63 results in a very poor cardioid. For the best results, N should be a <a href="http://oeis.org/A167791">number for which 2 is a primitive root</a>.
+
+By printing free-floating strings with one end not attached to any wall, or by printing strands between two walls and cutting them off after the print is finished, we can print structures that resemble hairs or bristles:
+
+<center><img src="img/hairs.png" style="width: 40%;"></center>
+
+By printing the bristles radially outwards from a pillar, and varying their lengths from bottom to top, we can print the following structures that resemble pine trees:
+
+<div class="img-and-code-div" style="width: 50%;">
+    <div class="code-div">
+        <code><pre>
+        for l in range(50):
+            t.extrude(0.1)
+            t.dwell(100)
+            t.lift(0.05)
+
+        for x in range(60):
+            for l in range(10):
+                t.extrude(0.1)
+                t.dwell(100)
+                t.lift(0.1)
+            for n in range(5):
+                t.forward(10-x/6)
+                t.left(math.pi/6)
+                t.forward(10-x/6)
+                t.left(5*math.pi/6)
+                t.forward(10-x/6)
+                t.left(math.pi/6)
+                t.forward(10-x/6)
+                t.left(math.pi/6)
+                t.left(math.pi/5)
+            t.left(math.pi/7)
+        </pre></code>
+    </div>
+    <div class="img-div">
+        <img src="img/pine_trees.png">
+    </div>
+</div>
 
 <a id="textures">
 <h3>Interesting textures</h3>
