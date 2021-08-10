@@ -46,12 +46,13 @@ while radius>0:
 t.penup()
 for l in range(200):
     t.extrude(0.2)
-    t.dwell(50)
+    t.dwell(200)
     t.lift(0.1)
     t.rate(5000)
     for i in range(4):
         t.forward(150)
         t.left(math.pi/2)
+    t.rate(500)
 
 ## Save to a GCODE file
 t.finish()

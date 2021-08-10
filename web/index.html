@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<style type="text/css">
+
+    body {
+        background-color: #4099ef;
+    }
+
+    #content {
+        background-color: #a6e3fd;
+        padding: 20px;
+        border-radius: 10px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 5%;
+        width: 75%;
+    }
+
+    .img-and-code-div {
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        overflow: hidden;
+    }
+
+    .code-div {
+        float: left;
+        width: 50%;
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+
+    .code-div code {
+        float: left;
+    }
+
+    .img-div {
+        float: right;
+        width: 50%;
+        margin-top: auto;
+        margin-bottom: auto;
+        object-fit: contain;
+    }
+
+    .img-div img {
+        float: right;
+    }
+
+    img {
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .skinny_img {
+        width: 70%;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+</style>
+</head>
+
+<body>
+
+<div id="content">
+
+<center>
+<h1>Extruder-Turtle Library</h1>
+<img src="img/gallery.png" style="width: 80%">
+</center>
+
+<p>ExtruderTurtle is a Python library that translates 3D Turtle commands into GCODE that can be run on 3D printers. In particular, it allows you to design objects that can't be generated using Slicer software. <a href="https://github.com/Hand-and-Machine/extruder-turtle">Download this library from GitHub!</a></p>
+
+<ol>
+    <li><a href="#what-is-3d-turtle">What is 3D Turtle?</a></li>
+    <li><a href="#what-is-gcode">What is GCODE?</a></li>
+    <li><a href="#how-do-i-use">How do I use ExtruderTurtle?</a></li>
+    <li><a href="#what-can-you-print">What can you print with ExtruderTurtle?</a>
+    <ul>
+        <li><a href="#fractal-shapes">Fractal shapes</a></li>
+        <li><a href="#hair-and-string">Hairs and string art</a></li>
+        <li><a href="#textures">Interesting textures</a></li>
+        <li><a href="#flexible-objects">Flexible objects</a></li>
+        <li><a href="#nonplanar-slicing">Nonplanar slicing</a></li>
+    </ul>
+    </li>
+</ol>
+
+<a id="what-is-3d-turtle">
+<h2>What is 3D Turtle?</h2>
+
+<p>Turtle Geometry is an alternative paradigm for doing geometry. Whereas Euclidean Geometry is driven by axiomatic proofs and Cartesian Geometry describes figures analytically in terms of their points, Turtle Geometry adopts a more procedural mindset, making it apt for use by programmers.</p>
+
+<p>We may conceptualize Turtle Geometry by imagining a turtle sitting on a plane, holding a pen. We may control the turtle's movement by issuing a few simple commands. For instance, we can use the command <code>FORWARD 20</code> to make the turtle move forward 20 units, or <code>RIGHT 45</code> to make the turtle turn right 45 degrees. As the turtle moves, it traces a path behind it using the pen. By combining these commands with other constructions that are common for programming languages, such as for-loops or if-statements, we can direct the turtle to draw a variety of complex and beautiful shapes. For instance, consider the following simple program, and the pleasant shape it produces:</p>
+
+<div class="img-and-code-div" style="width: 50%;">
+    <div class="code-div">
+        <code><pre>
+            REPEAT 10
+                FORWARD 20
+                RIGHT 108
+        </pre></code>
+    </div>
+    <div class="img-div">
+        <img src="img/2D_turtle_ex.png">
+    </div>
+</div>
+
+<p>If you're interested in seeing more examples like this and learning more about Turtle Geometry in general, you should check out the book <a href="https://handandmachine.cs.unm.edu/classes/Computational_Fabrication_Spring2021/readings/turtle-geometry.pdf"><i>Turtle Geometry: The Computer as a Medium for Exploring Mathematics</i></a> by Abelson and diSessa.</p>
+
+<p>The ExtruderTurtle library incorporates commands from traditional 2D Turtle Geometry, but it also uses commands from 3D Turtle, a generalization of traditional Turtle Geometry in which the Turtle can move anywhere in 3D space. The turtle can move forwards and backwards as before, but it can now rotate about three different axes. These three types of rotation are called <code>YAW</code>, <code>PITCH</code> and <code>ROLL</code>.</p>
+
+<center><img src="img/turtle_directions.png" style="width: 40%;"></center>
+
+<a id="what-is-gcode">
+<h2>What is GCODE?</h2>
+
+GCODE is a programming language used to control machines, particularly 3D printers. Each GCODE command corresponds to a particular action to be taken by the 3D printer. For instance, the command <code>G01 X10 Y20 Z30</code> will move the printer head to the position (10, 20, 30). Here's a short list of commonly-used GCODE commands:
+
+<ul style="width: 100%;">
+    <li><code>G01 Xx Yx Zz</code> moves the extruder to (x, y, z)</li>
+    <img class="skinny_img" src="img/g01_diagram.png">
+    <li><code>G01 Xx Yx Zz Ee</code> moves the extruder to (x, y, z) while extruding e millimeters of filament</li>
+    <li><code>G01 Ee</code> extrudes e millimeters of filament in-place</li>
+    <img class="skinny_img" src="img/g01e_diagram.png">
+    <li><code>G01 Ff</code> sets the feedrate, or the speed of movement, to f millimeters/second</li>
+    <img class="skinny_img" src="img/g01f_diagram.png">
+    <li><code>G04 Pp</code> pauses for p milliseconds</li>
+    <img class="skinny_img" src="img/g04_diagram.png">
+    <li><code>M104 Ss</code> sets the hotend temperature to s degrees, and <code>M109 Ss</code> makes the printer wait until it is finished heating to the desired temperature</li>
+    <img class="skinny_img" src="img/hotend_diagram.png">
+    <li><code>M140 Ss</code> sets the bed temperature to s degrees, and <code>M190 Ss</code> makes the printer wait until it is finished heating to the desired temperature</li>
+    <img class="skinny_img" src="img/heatbed_diagram.png">
+    <li><code>G91</code> puts all axes in relative mode, so that all coordinates are measured relative to the current position</li>
+    <img class="skinny_img" src="img/g91_diagram.png">
+</ul>
+
+There are many other GCODE commands, but these are the main ones used for 3D printing. 
+
+The image of a turtle moving through space with a pen and tracing a path behind it is comparable to that of an extruder head moving around the print bed and leaving a trail of filament in its path. This suggests that it would be apt to implement 3D Turtle functionality using GCODE, which is exactly what the ExtruderTurtle library attempts to do. 
+
+<a id="how-do-i-use">
+<h2>How do I use ExtruderTurtle?</h2>
+
+Here's a list of ExtruderTurtle commands:
+
+<h3>Setup</h3>
+
+The following methods are used to set up your turtle design:
+
+<ul>
+    <li>
+        The constructor <code>t = ExtruderTurtle()</code> takes no arguments and creates a new turtle with a few default parameter values in place:
+        <ul>
+            <li>The default output file name is "turtle.gcode"</li>
+            <li>The turtle's initial orientation is pointing in the positive-x direction with its shell parallel to the xy-plane.</li>
+            <li>The default starting feedrate is 0.</li>
+            <li>The default extrusion density (mm of filament extruded per mm moved) is equal to zero.</li>
+            <li>The pen is down by default.</li>
+        </ul>
+    </li>
+    <li><code>t.name("your-filename.gcode")</code> allows you to change the name of the output file.</li>
+    <li>
+        <code>t.setup()</code> writes the sequence of initialization commands (which moves the nozzle to its starting position, heats the bed and extruder, and so on). It takes several optional arguments that allow you to customize the setup process:
+        <ul>
+            <li><code>x=0</code> is the starting x-value</li>
+            <li><code>y=0</code> is the starting y-value</li>
+            <li><code>feedrate=100</code> is the starting feedrate</li>
+            <li><code>hotend_temp=215</code> is the default hotend temperature</li>
+            <li><code>bed_temp=60</code> is the default bed temperature</li>
+        </ul>
+    </li>
+    <li><code>t.finish()</code> carries out the finalization sequence (which moves the extruder upwards, cools the bed and extruder, etc).</li>
+</ul>
+
+<h3>Turtle actions</h3>
+
+Here are the commands corresponding to 3D turtle:
+
+<ul>
+    <li><code>t.forward(distance)</code> moves the turtle forward by a given distance, extruding along the way if the pen is down.</li>
+    <li><code>t.left(theta)</code> turns the turtle left by a given angle. This is an alias for <code>t.yaw(theta)</code>.</li>
+    <li><code>t.right(theta)</code> turns the turtle right by a given angle. This is an alias for <code>t.yaw(-theta)</code>.</li>
+    <li><code>t.pitch_up(theta)</code> tilts the turtle "upwards" in the direction its eyes would point. Alias for <code>t.pitch(theta)</code>.</li>
+    <li><code>t.pitch_down(theta)</code> tilts the turtle "downwards". Alias for <code>t.pitch(-theta)</code>.</li>
+    <li><code>t.roll_left(theta)</code> rolls the turtle towards its left side. Alias for <code>t.roll(-theta)</code>.</li>
+    <li><code>t.roll_right(theta)</code> rolls the turtle towards its right side. Alias for <code>t.roll(theta)</code>.</li>
+    <li><code>t.lift(height)</code> lifts the turtle up by a given height. Usually used to move from one layer of a print to the next.</li>
+    <li><code>t.forward_lift(distance, height)</code> moves the turtle diagonally forward and up by given amounts. Note that "up" does not necessarily point in the positive z-direction, but rather in the direction normal to the turtle's shell.</li>
+    <li><code>t.penup()</code> lifts the pen up. No extrusion will occur until it is put down again.</li>
+    <li><code>t.pendown()</code> puts the pen down. Extrusion will occur at a constant rate with each movement unless the pen is lifted up.</li>
+    <li><code>t.extrude(amount)</code> extrudes a given amount of filament in-place.</li>
+    <li><code>t.do(command)</code> will write a manually-specified GCODE command to the output file.</li>
+</ul>
+
+<h3>Configuration</h3>
+
+These methods are used to configure the turtle and the style of the pint:
+
+<ul>
+    <li><code>t.set_density(density)</code> sets the density of extrusion, or the rate at which filament is extruded, measured in millimeters of filament per millimeters of movement.</li>
+    <li><code>t.rate(feedrate)</code> sets the feedrate of the extruder, or the "speed" of the turtle.</li>
+    <li><code>t.use_degrees</code> is a boolean value, default false, that determines whether angles are interpreted as degrees or radians.</li>
+    <li><code>t.track_history</code> is a boolean value, set to False by default, which stores a history of the turtle's path. Primarily used for visualization/debugging.</li>
+</ul>
+
+<h3>Sample print</h3>
+
+Here's a sample program that generates GCODE for a simple seven-pointed star: 
+
+<div class="img-and-code-div" style="width: 70%;">
+    <div class="code-div">
+        <code><pre>
+            from extruder_turtle import ExtruderTurtle
+            import math
+
+            t = ExtruderTurtle()
+
+            t.name("seven_star.gcode")
+            t.setup(x=100,y=100)
+            t.rate(700)
+
+            for l in range(30):
+                for k in range(7):
+                    t.forward(50)
+                    t.right(6*math.pi/7)
+                t.lift(0.3)
+
+            t.finish()
+        </pre></code>
+    </div>
+    <div class="img-div">
+        <img src="img/seven_star.png" style="float: right; width: 70%;">
+    </div>
+</div>
+
+<a id="what-can-you-print">
+<h2>What can you print with ExtruderTurtle?</h2>
+
+<a id="fractal-shapes">
+<h3>Fractal shapes</h3>
+
+Turtle Geometry is very effective for describing simple geometrical shapes such as the seven-pointed-star example shown earlier, but simple programs can also encode complex fractals. <a href="https://en.wikipedia.org/wiki/L-system">L-Systems</a> can be used to recursively generate sequences of turtle moves to draw fractals such as the Koch Snowflake and the Hilbert Curve:
+
+<div class="img-and-code-div" style="width: 50%;">
+    <div class="code-div">
+        <code><pre>
+        VARIABLES: F R L
+
+        CONSTANTS: none
+
+        AXIOM: FRRFRRFRR
+
+        RULES: F --> FLFRRFLF
+        </pre></code>
+    </div>
+    <div class="img-div">
+        <img src="img/koch_snowflake.png">
+    </div>
+</div>
+
+<div class="img-and-code-div" style="width: 50%;">
+    <div class="code-div">
+        <code><pre>
+        VARIABLES: A B
+
+        CONSTANTS: F R L
+
+        AXIOM: A
+
+        RULES: A --> RBFLAFALFBR
+               B --> LAFRBFBRFAL
+        </pre></code>
+    </div>
+    <div class="img-div">
+        <img src="img/hilbert_curve.png">
+    </div>
+</div>
+
+Python code can easily written to iterate the substitution rules for each of these L-Systems several times, and then translate each of them into a turtle command. (In the Koch Snowflake, F R L correspond to a forward movement and a 60-degree right turn and left turn respectively, and in the Hilbert Curve, R and L represent 90-degree turns instead.) The L-System instructions are repeated several times, once for each horizontal layer, to give the fractal some thickness.
+
+The Hilbert Curve has some interesting mechanical properties:
+
+<center><img src="img/hilbert_stretch.png" class="skinny_img"></center>
+
+<a id="hairs-and-string">
+<h3>Hairs and string art</h3>
+
+By printing thin, free-floating strands of filament that join to the edges of a solid frame, we can create string art. For instance, if we place a number of equally-spaced points around the circumference of a circle and join each point N to point 2N with a thin strand of plastic, we obtain an emergent cardioid shape. The following was printed with N=67 points:
+
+<center><img src="img/cardioid.png" style="width: 30%;"></center>
+
+If the turtle is instructed to move from one point to the next without backtracking (from point 1 to 2 to 4 to 8 and so on), it isn't guaranteed that all points will be visited. For example, using N=63 results in a very poor cardioid. For the best results, N should be a <a href="http://oeis.org/A167791">number for which 2 is a primitive root</a>.
+
+By printing free-floating strings with one end not attached to any wall, or by printing strands between two walls and cutting them off after the print is finished, we can print structures that resemble hairs or bristles:
+
+<center><img src="img/hairs.png" style="width: 40%;"></center>
+
+By printing the bristles radially outwards from a pillar, and varying their lengths from bottom to top, we can print the following structures that resemble pine trees:
+
+<div class="img-and-code-div" style="width: 50%;">
+    <div class="code-div">
+        <code><pre>
+        for l in range(50):
+            t.extrude(0.1)
+            t.dwell(100)
+            t.lift(0.05)
+
+        for x in range(60):
+            for l in range(10):
+                t.extrude(0.1)
+                t.dwell(100)
+                t.lift(0.1)
+            for n in range(5):
+                t.forward(10-x/6)
+                t.left(math.pi/6)
+                t.forward(10-x/6)
+                t.left(5*math.pi/6)
+                t.forward(10-x/6)
+                t.left(math.pi/6)
+                t.forward(10-x/6)
+                t.left(math.pi/6)
+                t.left(math.pi/5)
+            t.left(math.pi/7)
+        </pre></code>
+    </div>
+    <div class="img-div">
+        <img src="img/pine_trees.png">
+    </div>
+</div>
+
+<a id="textures">
+<h3>Interesting textures</h3>
+
+<a id="flexible-objects">
+<h3>Flexible objects</h3>
+
+<a id="nonplanar-slicing">
+<h3>Nonplanar slicing</h3>
+
+<br style="clear:both;"/>
+
+</div>
+
+
+</body>
