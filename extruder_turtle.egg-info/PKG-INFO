@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: extruder-turtle
+Version: 0.1
+Summary: A Python package that uses the principles of Turtle Geometry to generate GCODE for 3d-printed solids.
+Home-page: UNKNOWN
+Author: Franklin Pezzuti Dyer
+Author-email: franklin+extruderturtle@dyer.me
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
