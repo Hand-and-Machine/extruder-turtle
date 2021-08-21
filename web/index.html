@@ -222,9 +222,12 @@ These methods are used to configure the turtle and the style of the pint:
     <li><code>t.track_history</code> is a boolean value, set to False by default, which stores a history of the turtle's path. Primarily used for visualization/debugging.</li>
 </ul>
 
+<a id="turtle-with-rhino">
 <h3>Using ExtruderTurtle with Rhino/Grasshopper</h3>
 
-TODO
+The ExtruderTurtle library includes some built-in tools that can be used with Rhino, a piece of software for 3D modelling and visualization, and Grasshopper, a plugin for Rhino that allows users to run Python code to generate structures. Rhino/Grasshopper use IronPython only, so many newer Python modules that require versions later than Python2.7 will not work. However, ExtruderTurtle only makes use of the "math" module, making it usable from within Grasshopper.
+
+To install
 
 <h3>Sample print</h3>
 
