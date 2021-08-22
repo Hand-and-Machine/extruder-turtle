@@ -156,9 +156,7 @@ The image of a turtle moving through space with a pen and tracing a path behind 
 <a id="how-do-i-use">
 <h2>How do I use ExtruderTurtle?</h2>
 
-<p>To install the library, simpy use <code>python3 -m pip install extruder_turtle</code>.</p> 
-
-<p>If you want to use it in conjunction with Rhino and Grasshopper, installation is a bit more complex. On MacOS, RhinoPython libraries are installed in the directory</p> <code>/Users/YOUR_USERNAME/Applications/Rhino\&nbsp;7.app/Contents/Frameworks/RhCore.framework/Versions/Current/Resources/ManagedPlugIns/RhinoDLR_Python.rhp/Lib</code> <p>Save a copy of <a href="https://github.com/Hand-and-Machine/extruder-turtle/blob/rhino/extruder_turtle/ExtruderTurtleForRhino.py">ExtruderTurtleForRhino.py</a> to this folder, and you should be able to use it from within the Grasshopper Python console.</p>
+<p>To install the library, simpy use <code>python3 -m pip install extruder_turtle</code>.</p> If you want to use ExtruderTurtle in conjunction with Rhino, see <a href="#turtle-with-rhino">this section below</a>. 
 
 Here's a list of ExtruderTurtle commands:
 
@@ -222,18 +220,33 @@ These methods are used to configure the turtle and the style of the pint:
     <li><code>t.track_history</code> is a boolean value, set to False by default, which stores a history of the turtle's path. Primarily used for visualization/debugging.</li>
 </ul>
 
-<a id="turtle-with-rhino">
-<h3>Using ExtruderTurtle with Rhino/Grasshopper</h3>
-
-The ExtruderTurtle library includes some built-in tools that can be used with Rhino, a piece of software for 3D modelling and visualization, and Grasshopper, a plugin for Rhino that allows users to run Python code to generate structures. Rhino/Grasshopper use IronPython only, so many newer Python modules that require versions later than Python2.7 will not work. However, ExtruderTurtle only makes use of the "math" module, making it usable from within Grasshopper.
-
-To install
-
 <h3>Sample print</h3>
 
 <p>Here's a sample program that generates GCODE for a simple seven-pointed star: </p>
 
 <center><img src="img/seven_star_example.png" style="width: 80%;"></center>
+
+
+<a id="turtle-with-rhino">
+<h3>Using ExtruderTurtle with Rhino/Grasshopper</h3>
+
+<p>The ExtruderTurtle library includes some built-in tools that can be used with Rhino, a piece of software for 3D modelling and visualization, and Grasshopper, a plugin for Rhino that allows users to run Python code to generate structures. Rhino/Grasshopper use IronPython only, so many newer Python modules that require versions later than Python2.7 will not work. However, ExtruderTurtle only makes use of the "math" module, making it usable from within Grasshopper.</p>
+
+<p>To install ExtruderTurtle for Rhino on MacOS, locate the files "ExtruderTurtle.py" and "ExtruderTurtleForRhino.py" and the "data" directory inside of the <a href="https://github.com/Hand-and-Machine/extruder-turtle/tree/main/extruder_turtle">extruder_turtle directory</a> of the main repository. Copy all three of these to the following directory on your system:</p>
+
+<center style="margin: 15px;">
+<code>~/Applications/Rhino\ 7.app/Contents/Frameworks/RhCore.framework/Versions/Current/Resources/ManagedPlugIns/RhinoDLR_Python.rhp/Lib</code>
+</center>
+
+<p>Now ExtruderTurtle is installed for your Rhino client! Create a new Grasshopper file, and use the following setup to run ExtruderTurtle code:</p>
+
+<center><img src="img/grasshopper_setup.png" style="width: 70%;"></center>
+
+<p>The first simple Python script is used to allow Rhino to open and edit a .gcode file on your system, and when you run it, a dialog box will appear asking you to name the file. After that, you should be able to run your ExtruderTurtle code! Setting <code>t.track_history = True</code> instructs the turtle to keep a list of filament lines that it extrudes, which can be used to visualize the print in Rhino using the following code snippet:</p>
+
+<center><img src="img/rhino_viz_example.png"></center>
+
+<p>The third "Line" component receives the "lines" array from the second Python component and draws each line segment in Rhino's visualization model.</p>
 
 <a id="what-can-you-print">
 <h2>What can you print with ExtruderTurtle?</h2>
