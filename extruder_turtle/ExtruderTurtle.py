@@ -19,7 +19,7 @@ class ExtruderTurtle:
         self.forward_vec = [1, 0, 0]
         self.left_vec = [0, 1, 0]
         self.up_vec = [0, 0, 1]
-        self.use_degrees = False
+        self.use_degrees = True
     
         self.feedrate = 0
         self.density = 0.05
@@ -88,27 +88,60 @@ class ExtruderTurtle:
     def penup(self):
         self.pen = False
         self.do(self.G1e.format(e=-3))
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
     def pendown(self):
         self.pen = True
         self.do(self.G1e.format(e=3))
 
     def yaw(self, angle):
+<<<<<<< Updated upstream
         theta = self.convert_angle(angle)
+=======
+        if self.use_degrees: 
+            self.net_yaw = (self.net_yaw + angle) % 360
+            theta = math.radians(angle)
+        else: 
+            theta = angle
+            self.net_yaw = (self.net_yaw + theta) % 2*math.pi
+>>>>>>> Stashed changes
         new_forward = [math.cos(theta)*self.forward_vec[i] + math.sin(theta)*self.left_vec[i] for i in range(3)]
         new_left = [math.cos(theta)*self.left_vec[i] - math.sin(theta)*self.forward_vec[i] for i in range(3)]
         self.forward_vec = new_forward
         self.left_vec = new_left
 
     def pitch(self, angle):
+<<<<<<< Updated upstream
         theta = self.convert_angle(angle)
+=======
+        if self.use_degrees: 
+            self.net_yaw = (self.net_yaw + angle) % 360
+            theta = math.radians(angle)
+        else: 
+            theta = angle
+            self.net_yaw = (self.net_yaw + theta) % 2*math.pi
+        self.net_pitch = (self.net_pitch + theta) % 2*math.pi
+>>>>>>> Stashed changes
         new_forward = [math.cos(theta)*self.forward_vec[i] + math.sin(theta)*self.up_vec[i] for i in range(3)]
         new_up = [math.cos(theta)*self.up_vec[i] - math.sin(theta)*self.forward_vec[i] for i in range(3)]
         self.forward_vec = new_forward
         self.up_vec = new_up
 
     def roll(self, angle):
+<<<<<<< Updated upstream
         theta = self.convert_angle(angle)
+=======
+        if self.use_degrees: 
+            self.net_yaw = (self.net_yaw + angle) % 360
+            theta = math.radians(angle)
+        else: 
+            theta = angle
+            self.net_yaw = (self.net_yaw + theta) % 2*math.pi
+        self.net_roll = (self.net_roll + theta) % 2*math.pi
+>>>>>>> Stashed changes
         new_left = [math.cos(theta)*self.left_vec[i] + math.sin(theta)*self.up_vec[i] for i in range(3)]
         new_up = [math.cos(theta)*self.up_vec[i] - math.sin(theta)*self.left_vec[i] for i in range(3)]
         self.left_vec = new_left
@@ -197,6 +230,13 @@ class ExtruderTurtle:
         self.z += height
         self.record_move(0, 0, height)
 
+<<<<<<< Updated upstream
+=======
+    def change_position(self, dx=0, dy=0, dz=0):
+        self.record_move(dx, dy, dz)
+        self.do(self.G1xyz.format(x=dx, y=dy, z=dz))
+
+>>>>>>> Stashed changes
     def set_position(self, x=False, y=False, z=False):
         if x == False: x = self.x
         if y == False: y = self.y
