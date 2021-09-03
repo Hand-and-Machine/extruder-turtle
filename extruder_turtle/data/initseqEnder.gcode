@@ -14,12 +14,17 @@ G1 Z2.0 F3000 ; Move Z Axis up little to prevent scratching of Heat Bed
 G1 X5 Y20 Z0.3 F5000.0 ; Move over to prevent blob squish 
 G92 E0 ; Reset extruder position to zero 
 G1 F300 E-3 
-G1 F1000
-G1 0 0 .3
+G1 F2000
+G1 0 0 .3               ; lift nozzle above bed a little
 ; ###############  end header  ############## 
 
+<<<<<<< Updated upstream
 G1 X{x} Y{y} Z{z}       ; go to the starting positionG1 
 F300 E3                 ; Extrude to get ready
+=======
+G1 X{x} Y{y} Z{z}       ; go to the starting position
+G1 F300 E3              ; Extrude to get ready
+>>>>>>> Stashed changes
 G1 F{feedrate}			; set the feedrate
 M83 					; Relative extrustion
 G91                     ; relative coordinates for X,Y,Z axes
