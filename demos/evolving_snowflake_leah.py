@@ -17,7 +17,9 @@ t.name("evolving_snowflake.gcode")
 t.setup(x=100, y=100)
 t.rate(700)
 
-for g in range(NUM_GENS):
+angle = 60
+
+for g in range(NUMBER_GENERATIONS):
     for l in range(40):
         progress = l/40
         gap_length = progress*sidelength/3
@@ -25,16 +27,16 @@ for g in range(NUM_GENS):
         for r in instr:
             if r == "f":
                 t.forward(long_length)
-                t.left(math.pi/3)
+                t.left(60)
                 t.forward(gap_length)
-                t.right(2*math.pi/3)
+                t.right(2*60)
                 t.forward(gap_length)
-                t.left(math.pi/3)
+                t.left(60)
                 t.forward(long_length)
             elif r == "r":
-                t.right(math.pi/3)
+                t.right(60)
             elif r == "l":
-                t.left(math.pi/3)
+                t.left(60)
         t.lift(0.3)
     new_instr = ""
     for r in instr:
@@ -43,3 +45,12 @@ for g in range(NUM_GENS):
     sidelength = sidelength/3
 
 t.finish()
+
+word  = "f"
+rules = {
+          "f": "flfrrflf",
+          "r": "r",
+          "l": "l"
+        }
+
+

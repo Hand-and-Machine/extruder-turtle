@@ -7,7 +7,7 @@ class ExtruderTurtle:
 
     def __init__(self):
         self.out_filename = "turtle.gcode"
-        self.initseq_filename = os.path.join(__location__, "data/initseqEnder.gcode")
+        self.initseq_filename = os.path.join(__location__, "data/initseq3DPotter.gcode")
         self.finalseq_filename = os.path.join(__location__, "data/finalseq.gcode")
         self.out_file = False;
         self.initseq_file = False;
@@ -272,6 +272,12 @@ class ExtruderTurtle:
         points = (point1, point2, point3)
         surface = rs.AddSrfPt(points)
         return surface
+'''
+    def draw_print_bed(self):
+        points = (point1, point2, point3)
+        surface = rs.AddSrfPt(points)
+        return surface
+'''
 
     def pause_and_wait(self):
         self.do(self.M0)
