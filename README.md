@@ -58,7 +58,7 @@ The extruder_turtle library does not make use of any libraries that require dist
 
 `/Users/YOUR_USERNAME/Applications/Rhino\ 7.app/Contents/Frameworks/RhCore.framework/Versions/Current/Resources/ManagedPlugIns/RhinoDLR_Python.rhp/Lib`
 
-You can simply save a copy of `ExtruderTurtle.py` to the `Lib` folder, and you should be able to use it from within Grasshopper. You may also need to add a folder called `data` containing `initseq.gcode` and `finalseq.gcode`, since these files are necessary for using the turtle to generate GCODE. Note that you may need to run Rhino as admin in order for it to have permission to open these files while running.
+You can simply save a copy of `ExtruderTurtleForRhino.py` to the `Lib` folder, and you should be able to use it from within Grasshopper. (Note: this is not the same as `ExtruderTurtle.py`, which is the source code that is used when you import the library in a code file outside of Rhino.) You may also need to add a folder called `data` containing `initseq.gcode` and `finalseq.gcode`, since these files are necessary for using the turtle to generate GCODE. Note that you may need to run Rhino as admin in order for it to have permission to open these files while running.
 
 An example visualization with Grasshopper is given in `turtletest.gh` in the `demos` folder (it shows how to visualize an example identical to the one generated in `demos/seven_star.py`).
 

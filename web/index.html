@@ -18,6 +18,14 @@
         width: 75%;
     }
 
+    code {
+        word-break: break-all;
+    }
+
+    center {
+        display: block;
+    }
+
     .img-and-code-div {
         width: 90%;
         margin-left: auto;
@@ -85,9 +93,8 @@
     <li><a href="#what-can-you-print">What can you print with ExtruderTurtle?</a>
     <ul>
         <li><a href="#fractal-shapes">Fractal shapes</a></li>
-        <li><a href="#hair-and-string">Hairs and string art</a></li>
+        <li><a href="#hairs-and-string">Hairs and string art</a></li>
         <li><a href="#textures">Interesting textures</a></li>
-        <li><a href="#flexible-objects">Flexible objects</a></li>
         <li><a href="#nonplanar-slicing">Nonplanar slicing</a></li>
     </ul>
     </li>
@@ -148,6 +155,8 @@ The image of a turtle moving through space with a pen and tracing a path behind 
 
 <a id="how-do-i-use">
 <h2>How do I use ExtruderTurtle?</h2>
+
+<p>To install the library, simpy use <code>python3 -m pip install extruder_turtle</code>.</p> If you want to use ExtruderTurtle in conjunction with Rhino, see <a href="#turtle-with-rhino">this section below</a>. 
 
 Here's a list of ExtruderTurtle commands:
 
@@ -213,33 +222,31 @@ These methods are used to configure the turtle and the style of the pint:
 
 <h3>Sample print</h3>
 
-Here's a sample program that generates GCODE for a simple seven-pointed star: 
+<p>Here's a sample program that generates GCODE for a simple seven-pointed star: </p>
 
-<div class="img-and-code-div" style="width: 70%;">
-    <div class="code-div">
-        <code><pre>
-            from extruder_turtle import ExtruderTurtle
-            import math
+<center><img src="img/seven_star_example.png" style="width: 80%;"></center>
 
-            t = ExtruderTurtle()
 
-            t.name("seven_star.gcode")
-            t.setup(x=100,y=100)
-            t.rate(700)
+<a id="turtle-with-rhino">
+<h3>Using ExtruderTurtle with Rhino/Grasshopper</h3>
 
-            for l in range(30):
-                for k in range(7):
-                    t.forward(50)
-                    t.right(6*math.pi/7)
-                t.lift(0.3)
+<p>The ExtruderTurtle library includes some built-in tools that can be used with Rhino, a piece of software for 3D modelling and visualization, and Grasshopper, a plugin for Rhino that allows users to run Python code to generate structures. Rhino/Grasshopper use IronPython only, so many newer Python modules that require versions later than Python2.7 will not work. However, ExtruderTurtle only makes use of the "math" module, making it usable from within Grasshopper.</p>
 
-            t.finish()
-        </pre></code>
-    </div>
-    <div class="img-div">
-        <img src="img/seven_star.png" style="float: right; width: 70%;">
-    </div>
-</div>
+<p>To install ExtruderTurtle for Rhino on MacOS, locate the files "ExtruderTurtle.py" and "ExtruderTurtleForRhino.py" and the "data" directory inside of the <a href="https://github.com/Hand-and-Machine/extruder-turtle/tree/main/extruder_turtle">extruder_turtle directory</a> of the main repository. Copy all three of these to the following directory on your system:</p>
+
+<center style="margin: 15px;">
+<code>~/Applications/Rhino\ 7.app/Contents/Frameworks/RhCore.framework/Versions/Current/Resources/ManagedPlugIns/RhinoDLR_Python.rhp/Lib</code>
+</center>
+
+<p>Now ExtruderTurtle is installed for your Rhino client! Create a new Grasshopper file, and use the following setup to run ExtruderTurtle code:</p>
+
+<center><img src="img/grasshopper_setup.png" style="width: 70%;"></center>
+
+<p>The first simple Python script is used to allow Rhino to open and edit a .gcode file on your system, and when you run it, a dialog box will appear asking you to name the file. After that, you should be able to run your ExtruderTurtle code! Setting <code>t.track_history = True</code> instructs the turtle to keep a list of filament lines that it extrudes, which can be used to visualize the print in Rhino using the following code snippet:</p>
+
+<center><img src="img/rhino_viz_example.png"></center>
+
+<p>The third "Line" component receives the "lines" array from the second Python component and draws each line segment in Rhino's visualization model.</p>
 
 <a id="what-can-you-print">
 <h2>What can you print with ExtruderTurtle?</h2>
@@ -247,103 +254,66 @@ Here's a sample program that generates GCODE for a simple seven-pointed star:
 <a id="fractal-shapes">
 <h3>Fractal shapes</h3>
 
-Turtle Geometry is very effective for describing simple geometrical shapes such as the seven-pointed-star example shown earlier, but simple programs can also encode complex fractals. <a href="https://en.wikipedia.org/wiki/L-system">L-Systems</a> can be used to recursively generate sequences of turtle moves to draw fractals such as the Koch Snowflake and the Hilbert Curve:
+<p>Turtle Geometry is very effective for describing simple geometrical shapes such as the seven-pointed-star example shown earlier, but simple programs can also encode complex fractals. <a href="https://en.wikipedia.org/wiki/L-system">L-Systems</a> can be used to recursively generate sequences of turtle moves to draw fractals such as the Koch Snowflake and the Hilbert Curve: </p>
 
-<div class="img-and-code-div" style="width: 50%;">
-    <div class="code-div">
-        <code><pre>
-        VARIABLES: F R L
+<center><img src="img/snowflake_example.png" style="width: 80%;"></center>
 
-        CONSTANTS: none
+<center><img src="img/hilbert_example.png" style="width: 80%;"></center>
 
-        AXIOM: FRRFRRFRR
+<p>Python code can easily written to iterate the substitution rules for each of these L-Systems several times, and then translate each of them into a turtle command. (In the Koch Snowflake, F R L correspond to a forward movement and a 60-degree right turn and left turn respectively, and in the Hilbert Curve, R and L represent 90-degree turns instead.) The L-System instructions are repeated several times, once for each horizontal layer, to give the fractal some thickness. </p>
 
-        RULES: F --> FLFRRFLF
-        </pre></code>
-    </div>
-    <div class="img-div">
-        <img src="img/koch_snowflake.png">
-    </div>
-</div>
-
-<div class="img-and-code-div" style="width: 50%;">
-    <div class="code-div">
-        <code><pre>
-        VARIABLES: A B
-
-        CONSTANTS: F R L
-
-        AXIOM: A
-
-        RULES: A --> RBFLAFALFBR
-               B --> LAFRBFBRFAL
-        </pre></code>
-    </div>
-    <div class="img-div">
-        <img src="img/hilbert_curve.png">
-    </div>
-</div>
-
-Python code can easily written to iterate the substitution rules for each of these L-Systems several times, and then translate each of them into a turtle command. (In the Koch Snowflake, F R L correspond to a forward movement and a 60-degree right turn and left turn respectively, and in the Hilbert Curve, R and L represent 90-degree turns instead.) The L-System instructions are repeated several times, once for each horizontal layer, to give the fractal some thickness.
-
-The Hilbert Curve has some interesting mechanical properties:
+<p>The Hilbert Curve has some interesting mechanical properties:</p>
 
 <center><img src="img/hilbert_stretch.png" class="skinny_img"></center>
 
 <a id="hairs-and-string">
 <h3>Hairs and string art</h3>
 
-By printing thin, free-floating strands of filament that join to the edges of a solid frame, we can create string art. For instance, if we place a number of equally-spaced points around the circumference of a circle and join each point N to point 2N with a thin strand of plastic, we obtain an emergent cardioid shape. The following was printed with N=67 points:
+<p>By printing thin, free-floating strands of filament that join to the edges of a solid frame, we can create string art. For instance, if we place a number of equally-spaced points around the circumference of a circle and join each point N to point 2N with a thin strand of plastic, we obtain an emergent cardioid shape.</p>
 
-<center><img src="img/cardioid.png" style="width: 30%;"></center>
+<p>How can we accomplish this with ExtruderTurtle? One simple way is to draw a line from point N to point 2N with the Turtle, backtrack to point N, and then move to the next point N+1 around the circumference, repeating this until all points have been visited. However, there's a more elegant solution that does not involve backtracking - instead, start at some point N, then draw a line from point N to point 2N, then draw another line directly from point 2N to point 2(2N) or 4N, and then to point 2(4N) or 8N, and so on.</p>
 
-If the turtle is instructed to move from one point to the next without backtracking (from point 1 to 2 to 4 to 8 and so on), it isn't guaranteed that all points will be visited. For example, using N=63 results in a very poor cardioid. For the best results, N should be a <a href="http://oeis.org/A167791">number for which 2 is a primitive root</a>.
+<p>One problem with this technique is that it does not guarantee all points will be visited. For instance, if there are 21 points and the turtle starts at point 1, it will proceed to point 2, then point 4, point 8, point 16, point 11, and back to point 1 again (since 2*16 and 2*11 are congruent to 11 and 1 modulo 21, respectively), skipping most of the points on the circle. However, if there are precisely 19 points, for example, the turtle will visit all of them (except for point zero) no matter where it starts.</p>
 
-By printing free-floating strings with one end not attached to any wall, or by printing strands between two walls and cutting them off after the print is finished, we can print structures that resemble hairs or bristles:
+<center><img src="img/primitive_root_cardioids.png" style="width: 80%;"></center>
 
-<center><img src="img/hairs.png" style="width: 40%;"></center>
+<p>In fact, in order for all points to be visited, resulting in the best-looking cardioid, the total number of points should be a number for which 2 is a primitive root. A list of such numbers can be found in <a href="http://oeis.org/A167791">OEIS A167791</a>. Here's an example printed with 67 points:</p>
 
-By printing the bristles radially outwards from a pillar, and varying their lengths from bottom to top, we can print the following structures that resemble pine trees:
+<center><img src="img/cardioid_example.png" style="width: 80%;"></center>
 
-<div class="img-and-code-div" style="width: 50%;">
-    <div class="code-div">
-        <code><pre>
-        for l in range(50):
-            t.extrude(0.1)
-            t.dwell(100)
-            t.lift(0.05)
+<p>By printing free-floating strings with one end not attached to any wall, or by printing strands between two walls and cutting them off after the print is finished, we can print structures that resemble hairs or bristles: </p>
 
-        for x in range(60):
-            for l in range(10):
-                t.extrude(0.1)
-                t.dwell(100)
-                t.lift(0.1)
-            for n in range(5):
-                t.forward(10-x/6)
-                t.left(math.pi/6)
-                t.forward(10-x/6)
-                t.left(5*math.pi/6)
-                t.forward(10-x/6)
-                t.left(math.pi/6)
-                t.forward(10-x/6)
-                t.left(math.pi/6)
-                t.left(math.pi/5)
-            t.left(math.pi/7)
-        </pre></code>
-    </div>
-    <div class="img-div">
-        <img src="img/pine_trees.png">
-    </div>
-</div>
+<center><img src="img/hairs.png" style="width: 60%;"></center>
+
+<p>By printing the bristles radially outwards from a pillar, and varying their lengths from bottom to top, we can print the following structures that resemble pine trees: </p>
+
+<center><img src="img/tree_example.png" style="width: 70%;"></center>
+
+<p>The loops of warm plastic sag and deform slightly as they leave the hot extruder nozzle, giving these prints a more "natural" look. </p>
 
 <a id="textures">
 <h3>Interesting textures</h3>
 
-<a id="flexible-objects">
-<h3>Flexible objects</h3>
+<p>Textures can be mapped to the surfaces of objects printed using ExtruderTurtle by adding small perturbations to the turtle's path. For instance, adding a small protrusion perpendicular to the surface at several points can result in braille-like textures. Such textures have been added to the surfaces of the following two cylinders:</p>
+
+<center><img src="img/braille_example.png" style="width: 70%;"></center>
+
+<p>For the cylinder on the left, the braille-like dots are randomly placed with increasing frequency from bottom to top. For the cylinder on the bottom, the placement of the dots represent black cells in a 1D wrap-around cellular automaton, where the bottom layer represents the first generation and the top layer represents the last. This 1D cellular automaton was generated using <a href="https://mathworld.wolfram.com/Rule30.html">Wolfram's "Rule 30"</a>.</p>
 
 <a id="nonplanar-slicing">
 <h3>Nonplanar slicing</h3>
+
+<p>Most 3D printed objects whose GCODE is generated by a slicer have completely flat layers. However, this constraint can often be detrimental. In particular, when objects have curves that are very gently sloped in the z-direction, horizontally sliced layers can lead to an ugly "stair-stepping effect" that visibly decrease the quality of the print.</p>
+
+<p>Using ExtruderTurtle, we can print layers that are slightly concave. Because vertical movement can sometimes lead to collisions between the extruder and the print, care must be taken to ensure that the slopes are sufficiently shallow. The following star-shaped solid was printed with parabolically curved layers:</p>
+
+<center><img src="img/nonplanar_star_example.png" style="width: 80%;"></center>
+
+<p>The first layer is perfectly flat so that it can stick to the print bed. However, after the first layer, each layer becomes slightly more curved than the last, so that the concavity of each layer increases from bottom to top. Note that each parabola segment always starts and ends at the same height, because the summation of x/25 as x ranges from x=-25 to x=25 equals zero. That is, the sum total of all z-displacements over each turtle movement in a single parabola segment equals zero.</p> 
+
+<p>The following vase was also printed using nonplanar slicing. Instead of parabolic curves, it has a sinusoidal curve around its rim:</p>
+
+<center><img src="img/nonplanar_vase.png" style="width: 30%;"></center>
 
 <br style="clear:both;"/>
 
