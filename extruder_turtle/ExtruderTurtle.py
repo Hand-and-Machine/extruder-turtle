@@ -1,12 +1,13 @@
 import os
 import math
+import rhinoscriptsyntax as rs
 __location__ = os.path.dirname(__file__)
 
 class ExtruderTurtle:
 
     def __init__(self):
         self.out_filename = "turtle.gcode"
-        self.initseq_filename = os.path.join(__location__, "data/initseqEnder.gcode")
+        self.initseq_filename = os.path.join(__location__, "data/initseq3DPotter.gcode")
         self.finalseq_filename = os.path.join(__location__, "data/finalseq.gcode")
         self.out_file = False;
         self.initseq_file = False;
@@ -84,6 +85,9 @@ class ExtruderTurtle:
     def set_density(self, density):
         self.density = density
 
+    def set_extrude_rate(self, density):
+        self.density = density
+
     def penup(self):
         self.pen = False
         self.do(self.G1e.format(e=-3))
@@ -143,6 +147,9 @@ class ExtruderTurtle:
         self.set_heading(self.yaw + yaw, self.pitch + pitch, self.roll + roll)
 
     def rate(self, feedrate):
+        self.do(self.G1f.format(f=feedrate))
+
+    def set_feedrate(self, feedrate):
         self.do(self.G1f.format(f=feedrate))
 
     def record_move(self, dx, dy, dz, de=0):
@@ -249,6 +256,25 @@ class ExtruderTurtle:
         net_roll = math.atan2(y, x)
         if self.use_degrees: return math.degrees(net_roll)
         return self.net_roll
+
+    def draw_turtle(self):
+        new_forward = [math.cos(math.radians(90))*self.forward_vec[i] + math.sin(math.radians(90))*self.left_vec[i] for i in range(3)]
+        dx = 2 * new_forward[0]
+        dy = 2 * new_forward[1]
+        dz = 2 * new_forward[2]
+        point1 = rs.AddPoint(self.getX()+dx, self.getY()+dy, self.getZ()+dz)
+        new_forward = [math.cos(math.radians(-90))*self.forward_vec[i] + math.sin(math.radians(-90))*self.left_vec[i] for i in range(3)]
+        dx = 2 * new_forward[0]
+        dy = 2 * new_forward[1]
+        dz = 2 * new_forward[2]
+        point2 = rs.AddPoint(self.getX()+dx, self.getY()+dy, self.getZ()+dz)
+        dx = 5 * self.forward_vec[0]
+        dy = 5 * self.forward_vec[1]
+        dz = 5 * self.forward_vec[2]
+        point3 = rs.AddPoint(self.getX()+dx, self.getY()+dy, self.getZ()+dz)
+        points = (point1, point2, point3)
+        surface = rs.AddSrfPt(points)
+        return surface
 
     def dwell(self, ms):
         self.do(self.G4p.format(p=ms))
