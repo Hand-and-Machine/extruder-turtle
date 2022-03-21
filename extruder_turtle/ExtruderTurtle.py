@@ -1,13 +1,13 @@
 import os
 import math
-import rhinoscriptsyntax as rs
+import rhinoscriptsyntax as rs #Rhino dependency
 __location__ = os.path.dirname(__file__)
 
 class ExtruderTurtle:
 
     def __init__(self):
         self.out_filename = "turtle.gcode"
-        self.initseq_filename = os.path.join(__location__, "data/initseqEnder.gcode")
+        self.initseq_filename = os.path.join(__location__, "data/initseq3DPotter.gcode")
         self.finalseq_filename = os.path.join(__location__, "data/finalseq.gcode")
         self.out_file = False;
         self.initseq_file = False;
@@ -19,7 +19,7 @@ class ExtruderTurtle:
         self.forward_vec = [1, 0, 0]
         self.left_vec = [0, 1, 0]
         self.up_vec = [0, 0, 1]
-        self.use_degrees = False
+        self.use_degrees = True
     
         self.feedrate = 0
         self.density = 0.05
@@ -262,6 +262,24 @@ class ExtruderTurtle:
         if self.use_degrees: return math.degrees(net_roll)
         return self.net_roll
 
+    def dwell(self, ms):
+        self.do(self.G4p.format(p=ms))
+
+    def pause_and_wait(self):
+        self.do(self.M0)
+
+    def extrude(self, quantity):
+        self.do(self.G1e.format(e=quantity))
+
+    def bed_temp(self, temp):
+        self.do(self.M140s.format(s=temp))
+
+    def extruder_temp(self, temp):
+        self.do(self.M104s.format(s=temp))
+
+
+    # Rhino dependencies
+
     def draw_turtle(self):
         new_forward = [math.cos(math.radians(90))*self.forward_vec[i] + math.sin(math.radians(90))*self.left_vec[i] for i in range(3)]
         dx = 2 * new_forward[0]
@@ -281,19 +299,9 @@ class ExtruderTurtle:
         surface = rs.AddSrfPt(points)
         return surface
 
-
-
-    def dwell(self, ms):
-        self.do(self.G4p.format(p=ms))
-
-    def pause_and_wait(self):
-        self.do(self.M0)
-
-    def extrude(self, quantity):
-        self.do(self.G1e.format(e=quantity))
-
-    def bed_temp(self, temp):
-        self.do(self.M140s.format(s=temp))
-
-    def extruder_temp(self, temp):
-        self.do(self.M104s.format(s=temp))
+    def get_lines(self):
+        lines = []
+        for l in self.line_segs:
+            if (l[0] != l[1]):
+                lines.append(rs.AddLine(l[0], l[1]))
+        return lines
