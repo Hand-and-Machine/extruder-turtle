@@ -7,7 +7,7 @@ class ExtruderTurtle:
 
     def __init__(self):
         self.out_filename = "turtle.gcode"
-        self.initseq_filename = os.path.join(__location__, "data/initseq3DPotter.gcode")
+        self.initseq_filename = os.path.join(__location__, "data/initseqEnder.gcode")
         self.finalseq_filename = os.path.join(__location__, "data/finalseq.gcode")
         self.out_file = False;
         self.initseq_file = False;
@@ -54,6 +54,9 @@ class ExtruderTurtle:
         if self.write_gcode:
             self.out_file.write(cmd + "\n")
 
+    def write_gcode_comment(self, comment):
+        self.out_file.write("; " + comment + "\n")
+
     def setup(self, x=0,
                     y=0,
                     z=0,
@@ -73,7 +76,6 @@ class ExtruderTurtle:
             self.initseq_file = open(self.initseq_filename, 'r')
             self.do(self.initseq_file.read().format(**locals()))
             self.initseq_file.close()
-
 
     def finish(self):
         if self.write_gcode:
@@ -152,6 +154,9 @@ class ExtruderTurtle:
     def set_feedrate(self, feedrate):
         self.do(self.G1f.format(f=feedrate))
 
+    def set_speed(self, feedrate):
+        self.do(self.G1f.format(f=feedrate))
+
     def record_move(self, dx, dy, dz, de=0):
         if self.track_history:
             prev_point = self.prev_points[-1]
@@ -179,7 +184,7 @@ class ExtruderTurtle:
             self.do(self.G1xyz.format(x=dx, y=dy, z=dz))
 
     def forward_lift(self, distance, height):
-        extrusion = math.sqrt(distance**2+height**2) * self.density
+        extrusion = round(math.sqrt(distance**2+height**2) * self.density,3)
         dx = distance * self.forward_vec[0] + height * self.up_vec[0]
         dy = distance * self.forward_vec[1] + height * self.up_vec[1]
         dz = distance * self.forward_vec[2] + height * self.up_vec[2]
@@ -276,6 +281,8 @@ class ExtruderTurtle:
         surface = rs.AddSrfPt(points)
         return surface
 
+
+
     def dwell(self, ms):
         self.do(self.G4p.format(p=ms))
 
@@ -290,4 +297,3 @@ class ExtruderTurtle:
 
     def extruder_temp(self, temp):
         self.do(self.M104s.format(s=temp))
-
