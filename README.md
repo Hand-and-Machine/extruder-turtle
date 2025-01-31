@@ -3,7 +3,7 @@
 
 # extruder-turtle
 
-A Python package that uses the principles of 3D Turtle Geometry to generate GCODE for 3D-printed solids.
+OUTDATED DON'T USE! A Python package that uses the principles of 3D Turtle Geometry to generate GCODE for 3D-printed solids.
 
 ## Basic functionality
 
