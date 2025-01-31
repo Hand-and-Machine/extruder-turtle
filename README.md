@@ -3,7 +3,8 @@
 
 # extruder-turtle
 
-OUTDATED DON'T USE! A Python package that uses the principles of 3D Turtle Geometry to generate GCODE for 3D-printed solids.
+OLD AND UNSUPPORTED DON'T USE! USE EXTRUDER TURTLE RHINO INSTEAD. 
+A Python package that uses the principles of 3D Turtle Geometry to generate GCODE for 3D-printed solids.
 
 ## Basic functionality
 
